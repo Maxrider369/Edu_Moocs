@@ -1,0 +1,84 @@
+{% extends 'inicio/encabezado.html' %}
+{% load static %}
+
+{%  block title %}
+Catalogo
+{%endblock%}
+
+    {% block contenido %}
+
+    <!-- Header -->
+    <div class="bg-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold text-gray-900">Catálogo de Cursos</h1>
+            <p class="text-gray-600 mt-2">Descubre todos nuestros cursos disponibles</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-wrap gap-4">
+                <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option>Todas las categorías</option>
+                    <option>Matemáticas</option>
+                    <option>Programación</option>
+                    <option>Ciencias</option>
+                    <option>Idiomas</option>
+                </select>
+                <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option>Todos los niveles</option>
+                    <option>Principiante</option>
+                    <option>Intermedio</option>
+                    <option>Avanzado</option>
+                </select>
+                <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option>Ordenar por</option>
+                    <option>Más populares</option>
+                    <option>Precio: menor a mayor</option>
+                    <option>Precio: mayor a menor</option>
+                    <option>Más recientes</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for curso in cursos %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+            <div class="h-40 overflow-hidden rounded-lg">
+                <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover">
+            </div>
+
+            <div class="p-4">
+                <h3 class="text-lg font-semibold mb-2">{{ curso.nombre }}</h3>
+                <p class="text-gray-600 text-sm mb-3">{{ curso.descripcion }}</p>
+                <div class="flex items-center mb-3">
+                    <div class="flex text-yellow-400">
+                        <span>★★★★★</span>
+                    </div>
+                    <span class="text-gray-500 text-sm ml-2">(4.8)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xl font-bold text-primary">${{ curso.precio }}</span>
+                    <form action="{% url 'agregar_al_carrito' curso.id %}" method="POST" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition duration-300">
+                            Agregar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+        </div>
+
+        </div>
+    </div>
+{%endblock%}
+

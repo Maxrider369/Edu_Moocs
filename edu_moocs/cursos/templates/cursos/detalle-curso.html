@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Curso - EDU MOOCS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#64748b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-primary">EDU MOOCS</h1>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-primary">INICIO</a>
+                    <a href="catalogo.html" class="text-gray-600 hover:text-primary">CATÁLOGO</a>
+                    <a href="mis-cursos.html" class="text-primary font-medium">MIS CURSOS</a>
+                    <a href="carrito.html" class="text-gray-600 hover:text-primary">CARRITO</a>
+                    <a href="perfil.html" class="text-gray-600 hover:text-primary">MI PERFIL</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Course Header -->
+    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h1 class="text-4xl font-bold mb-4">Matemáticas Avanzadas</h1>
+                    <p class="text-xl mb-6 opacity-90">Domina conceptos avanzados de cálculo y álgebra lineal</p>
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="flex text-yellow-400">
+                            <span>★★★★★</span>
+                        </div>
+                        <span>(4.8) • 456 estudiantes</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <img class="w-12 h-12 rounded-full bg-white/20" src="/placeholder.svg?height=48&width=48" alt="Instructor">
+                        <div>
+                            <p class="font-semibold">Dr. María González</p>
+                            <p class="opacity-90">Profesora de Matemáticas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
+                        <p class="text-sm opacity-90 mb-2">Progreso del curso</p>
+                        <div class="text-4xl font-bold mb-4">75%</div>
+                        <div class="w-full bg-white/20 rounded-full h-3 mb-4">
+                            <div class="bg-white h-3 rounded-full" style="width: 75%"></div>
+                        </div>
+                        <p class="text-sm opacity-90">12 de 16 lecciones completadas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2">
+                <!-- Course Modules -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-bold mb-6">Contenido del Curso</h2>
+                    <div class="space-y-4">
+                        <!-- Module 1 -->
+                        <div class="border border-gray-200 rounded-lg">
+                            <div class="p-4 bg-gray-50 border-b">
+                                <h3 class="font-semibold">Módulo 1: Fundamentos</h3>
+                                <p class="text-gray-600 text-sm">4 lecciones • 2h 30min</p>
+                            </div>
+                            <div class="p-4 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span>Introducción al Cálculo</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">35 min</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span>Límites y Continuidad</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">45 min</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span>Derivadas Básicas</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">40 min</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs">
+                                            ▶
+                                        </div>
+                                        <span class="font-medium">Ejercicios Prácticos</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">30 min</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 2 -->
+                        <div class="border border-gray-200 rounded-lg">
+                            <div class="p-4 bg-gray-50 border-b">
+                                <h3 class="font-semibold">Módulo 2: Derivadas Avanzadas</h3>
+                                <p class="text-gray-600 text-sm">4 lecciones • 3h 15min</p>
+                            </div>
+                            <div class="p-4 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span>Regla de la Cadena</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">50 min</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs">
+                                            ▶
+                                        </div>
+                                        <span class="font-medium">Derivadas Implícitas</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">45 min</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-gray-500">Optimización</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">55 min</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-gray-500">Problemas de Aplicación</span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">45 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Lesson -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4">Lección Actual: Derivadas Implícitas</h3>
+                    <div class="aspect-video bg-gray-900 rounded-lg mb-4 flex items-center justify-center">
+                        <button class="w-16 h-16 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition duration-300">
+                            <svg class="w-8 h-8 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition duration-300">
+                            ← Lección Anterior
+                        </button>
+                        <button class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
+                            Siguiente Lección →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <!-- Course Info -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Información del Curso</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Duración:</span>
+                            <span class="font-medium">8 semanas</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Lecciones:</span>
+                            <span class="font-medium">16</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Nivel:</span>
+                            <span class="font-medium">Avanzado</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Idioma:</span>
+                            <span class="font-medium">Español</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Certificado:</span>
+                            <span class="font-medium text-green-600">Sí</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resources -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4">Recursos</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
+                            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            </svg>
+                            <span>Manual del Curso.pdf</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
+                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            </svg>
+                            <span>Ejercicios Prácticos.xlsx</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
+                            <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            </svg>
+                            <span>Fórmulas de Referencia.pdf</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

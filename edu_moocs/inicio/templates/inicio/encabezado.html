@@ -1,0 +1,120 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title%} EDU MOOCS - Cursos Académicos Virtuales {%endblock%}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#64748b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    {% block nav %}
+    <!-- Navigation -->
+<nav class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <h1 class="text-xl font-bold text-primary">EDU MOOCS</h1>
+            </div>
+
+            <!-- Menú -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="{% url 'principal' %}" class="text-gray-600 hover:text-primary">INICIO</a>
+                <a href="{% url 'lista_cursos' %}" class="text-primary font-medium">CATÁLOGO</a>
+
+                {% if request.user.is_authenticated %}
+                    <a href="#" class=" hover:text-primary">MIS CURSOS</a>
+                    <a href="{% url 'ver_carrito' %}" class="text-gray-600 hover:text-primary relative">CARRITO</a>
+                {% endif %}
+
+                <a href="{% url 'contacto' %}" class="text-gray-600 hover:text-primary">CONTACTO</a>
+
+                {% if not request.user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="text-gray-600 hover:text-primary">LOGIN</a>
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                    <!-- Usuario y Logout -->
+                    <a href="{% url 'perfil' request.user.id %}" class="flex items-center space-x-2 ml-4 text-gray-700 hover:text-primary font-medium">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" class="h-8 w-8 rounded-full">
+                        <span>{{ request.user.username }}</span>
+                    </a>
+
+                    <a href="{% url 'logout' %}" class="flex items-center text-red-600 hover:text-primary ml-4 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+                        </svg>
+                        Logout
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+    {%endblock%}
+    {%block contenido%}
+
+    {%endblock%}
+    
+    <!-- Footer -->
+    {%block footer%}
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">EDU MOOCS</h5>
+                    <p class="text-gray-400">Plataforma líder en educación virtual académica</p>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Cursos</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Matemáticas</a></li>
+                        <li><a href="#" class="hover:text-white">Programación</a></li>
+                        <li><a href="#" class="hover:text-white">Ciencias</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Soporte</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Centro de Ayuda</a></li>
+                        <li><a href="#" class="hover:text-white">Contacto</a></li>
+                        <li><a href="#" class="hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Legal</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Términos</a></li>
+                        <li><a href="#" class="hover:text-white">Privacidad</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 EDU MOOCS. Todos los derechos reservados.</p>
+            </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="{% static 'inicio/main.js' %}"></script>
+    <script src="{% static 'inicio/cart.js' %}"></script>
+
+</body>
+</html>
+{%endblock%}
