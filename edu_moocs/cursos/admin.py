@@ -1,24 +1,36 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import Curso, Carrito, CursoEnCarrito
-from django.utils.html import mark_safe
 
 # Personalización del admin de Curso
 @admin.register(Curso)
 class CursoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'precio', 'disponible', 'imagen_preview')  # Añadido aquí también
+    list_display = ('nombre', 'precio', 'disponible', 'imagen_preview')
     list_filter = ('disponible',)
     search_fields = ('nombre', 'descripcion')
     readonly_fields = ('imagen_preview',)
 
-    # ✅ Método dentro de la clase
+    # Mostrar imagen en admin
     def imagen_preview(self, obj):
         if obj.imagen:
-            return mark_safe(f'<img src="{obj.imagen.url}" width="100" height="100" style="object-fit: cover;" />')
+            return mark_safe(f'<img src="{obj.imagen.url}" width="100" height="100" />')
         return "Sin imagen"
-    
     imagen_preview.short_description = "Vista previa"
 
-# ✅ Títulos personalizados del admin
-admin.site.site_header = "Administración de alumnos y Cursos"
-admin.site.site_title = "Panel Admin"
-admin.site.index_title = "Bienvenido al Panel de Administración"
+# CursoEnCarrito inline (para mostrar en el admin del carrito)
+class CursoEnCarritoInline(admin.TabularInline):
+    model = CursoEnCarrito
+    extra = 0
+
+# Personalización del admin de Carrito
+@admin.register(Carrito)
+class CarritoAdmin(admin.ModelAdmin):
+    list_display = ('usuario',)
+    inlines = [CursoEnCarritoInline]
+
+# Registro directo si no necesitas personalización extra
+@admin.register(CursoEnCarrito)
+class CursoEnCarritoAdmin(admin.ModelAdmin):
+    list_display = ('carrito', 'curso', 'fecha_agregado')
+    list_filter = ('fecha_agregado',)
+    search_fields = ('carrito__usuario__username', 'curso__nombre')
