@@ -30,3 +30,7 @@ def eliminar_del_carrito(request, curso_id):
     carrito = get_object_or_404(Carrito, usuario=request.user)
     CursoEnCarrito.objects.filter(carrito=carrito, curso_id=curso_id).delete()
     return redirect('ver_carrito')
+
+def detalle_curso(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+    return render(request, 'cursos/detalle-curso.html', {'curso': curso})

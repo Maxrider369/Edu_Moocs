@@ -22,11 +22,12 @@ from cursos import views as cursos_views
 from django.conf.urls.static import static
 from django.conf import settings
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.principal, name="principal"),
-    path('/contacto', views.contacto, name="contacto"),
-    path('/cursos', cursos_views.lista_cursos, name='lista_cursos'),
+    path('contacto/', views.contacto, name="contacto"),
+    path('cursos/', cursos_views.lista_cursos, name='lista_cursos'),
     path('registro/', usuarios_views.registro_basico, name='registro'),
     path('login/', usuarios_views.login_basico, name='login'),
     path('logout/', usuarios_views.logout_basico, name='logout'),
@@ -34,6 +35,9 @@ urlpatterns = [
     path('carrito/', cursos_views.ver_carrito, name='ver_carrito'),
     path('agregar/<int:curso_id>/', cursos_views.agregar_al_carrito, name='agregar_al_carrito'),
     path('eliminar/<int:curso_id>/', cursos_views.eliminar_del_carrito, name='eliminar_del_carrito'),
+    path('curso/<int:curso_id>/', cursos_views.detalle_curso, name='detalle_curso'),
+
+
 ]
 
 
