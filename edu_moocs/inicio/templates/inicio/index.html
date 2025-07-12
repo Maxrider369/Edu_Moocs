@@ -45,7 +45,7 @@ principal
                         <span class="text-2xl font-bold text-primary">${{ curso.precio }}</span>
                         <form action="{% url 'agregar_al_carrito' curso.id %}" method="POST">
                             {% csrf_token %}
-                            <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
+                            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-300 w-full">
                                 Agregar al Carrito
                             </button>
                         </form>
