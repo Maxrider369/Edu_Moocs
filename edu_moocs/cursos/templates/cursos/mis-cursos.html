@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Cursos - EDU MOOCS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#64748b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-primary">EDU MOOCS</h1>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-primary">INICIO</a>
+                    <a href="catalogo.html" class="text-gray-600 hover:text-primary">CATÁLOGO</a>
+                    <a href="mis-cursos.html" class="text-primary font-medium">MIS CURSOS</a>
+                    <a href="carrito.html" class="text-gray-600 hover:text-primary relative">
+                        CARRITO
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                    <a href="perfil.html" class="text-gray-600 hover:text-primary">MI PERFIL</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="bg-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold text-gray-900">Mis Cursos</h1>
+            <p class="text-gray-600 mt-2">Continúa tu aprendizaje</p>
+        </div>
+    </div>
+
+    <!-- Course Progress -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Course 1 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-40 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Matemáticas Avanzadas</h3>
+                    <p class="text-gray-600 mb-4">Progreso del curso</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Progreso</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">12/16 lecciones</span>
+                        <a href="detalle-curso.html" class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
+                            Continuar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-40 bg-gradient-to-r from-green-400 to-green-600"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Programación Web</h3>
+                    <p class="text-gray-600 mb-4">Progreso del curso</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Progreso</span>
+                            <span>45%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">9/20 lecciones</span>
+                        <a href="detalle-curso.html" class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
+                            Continuar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 3 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-40 bg-gradient-to-r from-purple-400 to-purple-600"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Ciencias Naturales</h3>
+                    <p class="text-gray-600 mb-4">Curso completado</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Progreso</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-green-600 font-medium">¡Completado!</span>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">
+                            Certificado
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
