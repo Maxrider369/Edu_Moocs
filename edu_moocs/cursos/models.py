@@ -8,7 +8,7 @@ class Curso(models.Model):
     imagen = models.ImageField(upload_to='cursos/', null=True, blank=True)
     disponible = models.BooleanField(default=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre
     
     class Meta:
@@ -18,7 +18,7 @@ class Curso(models.Model):
 class Carrito(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         return f"Carrito de {self.usuario.username}"
 
 class CursoEnCarrito(models.Model):
@@ -26,5 +26,6 @@ class CursoEnCarrito(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     fecha_agregado = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.curso.nombre
+
