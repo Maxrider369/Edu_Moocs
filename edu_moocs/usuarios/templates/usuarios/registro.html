@@ -1,84 +1,482 @@
 {% extends 'inicio/encabezado.html' %}
-{%  block title %}
-Registrar
-{%endblock%}
-
-{% block nav %}
-{%endblock%}
+{% block title %}Registrar{% endblock %}
+{% block nav %}{% endblock %}
 
 {% block contenido %}
-    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8">
+<style>
+    /* Estilos para el modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 20px;
+        padding: 0;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-body {
+        padding: 24px;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #e5e7eb;
+        background-color: #f9fafb;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .close {
+        color: #9ca3af;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        background: none;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+    }
+
+    .close:hover {
+        color: #374151;
+        background-color: #f3f4f6;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { 
+            opacity: 0;
+            transform: translateY(-50px) scale(0.95);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Estilos para el contenido de términos */
+    .terms-content h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin-top: 24px;
+        margin-bottom: 12px;
+    }
+
+    .terms-content p {
+        font-size: 14px;
+        color: #374151;
+        margin-bottom: 16px;
+        line-height: 1.5;
+    }
+
+    .terms-content ul {
+        font-size: 14px;
+        color: #374151;
+        margin-bottom: 16px;
+        padding-left: 20px;
+    }
+
+    .terms-content li {
+        margin-bottom: 4px;
+    }
+
+    .terms-link {
+        color: #1e40af;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .terms-link:hover {
+        color: #1d4ed8;
+    }
+
+    /* Estilos para validación de contraseñas */
+    .password-mismatch {
+        border-color: #ef4444 !important;
+    }
+
+    .error-message {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .success-message {
+        color: #10b981;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Crea tu cuenta
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                O
+                <a href="{% url 'login' %}" class="font-medium text-primary hover:text-blue-500">
+                    inicia sesión si ya tienes cuenta
+                </a>
+            </p>
+        </div>
+
+        {% if form.errors %}
+        <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4 text-sm">
+            <strong>¡Revisa los errores del formulario!</strong>
+            <ul class="list-disc pl-5 mt-2">
+            {% for field in form %}
+                {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form class="mt-8 space-y-6" method="POST" id="registrationForm">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label for="first-name" class="block text-sm font-medium text-gray-700">Nombre completo</label>
+                    <input id="first-name" name="first_name" type="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <input id="username" name="username" type="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                    <input id="email" name="email" type="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="password1" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <input id="password1" name="password1" type="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    <div class="text-xs text-gray-500 mt-1">Mínimo 8 caracteres</div>
+                </div>
+                <div>
+                    <label for="password2" class="block text-sm font-medium text-gray-700">Confirmar contraseña</label>
+                    <input id="password2" name="password2" type="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    <div id="password-error" class="error-message" style="display: none;">Las contraseñas no coinciden</div>
+                    <div id="password-success" class="success-message" style="display: none;">Las contraseñas coinciden</div>
+                </div>
+            </div>
+
+            <!-- Checkbox de términos y condiciones -->
+            <div class="flex items-center">
+                <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                <label for="terms" class="ml-2 block text-sm text-gray-900">
+                    Acepto los 
+                    <span class="terms-link" onclick="openTermsModal()">términos y condiciones</span>
+                </label>
+            </div>
+
             <div>
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Crea tu cuenta
-                </h2>
-                <p class="mt-2 text-center text-sm text-gray-600">
-                    O
-                    <a href="{% url 'login' %}" class="font-medium text-primary hover:text-blue-500">
-                        inicia sesión si ya tienes cuenta
-                    </a>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    Crear Cuenta
+                </button>
+            </div>
+
+            <!-- Enlace "Volver al inicio" -->
+            <div class="text-center mt-8">
+                <a href="{% url 'principal' %}" class="text-sm text-primary hover:underline">
+                    ← Volver al inicio
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Términos y Condiciones -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="text-lg font-medium text-gray-900">Términos y Condiciones - EDU MOOCS</h3>
+            <button class="close" onclick="closeTermsModal()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="terms-content">
+                <p class="text-sm text-gray-600 mb-4">
+                    <strong>Última actualización:</strong> <span id="currentDate"></span>
+                </p>
+
+                <h4>1. Aceptación de los Términos</h4>
+                <p>
+                    Al registrarse y utilizar EDU MOOCS, usted acepta estar sujeto a estos términos y condiciones de uso. Si no está de acuerdo con alguna parte de estos términos, no debe crear una cuenta ni utilizar nuestros servicios.
+                </p>
+
+                <h4>2. Descripción del Servicio</h4>
+                <p>
+                    EDU MOOCS es una plataforma educativa en línea que ofrece cursos de programación en diversos lenguajes y tecnologías, incluyendo pero no limitado a: JavaScript, Python, Java, React, Node.js, desarrollo web, desarrollo móvil, inteligencia artificial y ciencia de datos.
+                </p>
+
+                <h4>3. Registro y Cuenta de Usuario</h4>
+                <ul>
+                    <li>Debe proporcionar información precisa, completa y actualizada durante el registro</li>
+                    <li>Es responsable de mantener la confidencialidad de su contraseña</li>
+                    <li>Debe notificar inmediatamente cualquier uso no autorizado de su cuenta</li>
+                    <li>Debe ser mayor de 13 años para crear una cuenta (menores requieren consentimiento parental)</li>
+                    <li>Solo puede crear una cuenta por persona</li>
+                    <li>No puede transferir su cuenta a terceros</li>
+                </ul>
+
+                <h4>4. Uso de la Plataforma</h4>
+                <p>Se compromete a:</p>
+                <ul>
+                    <li>Utilizar la plataforma únicamente para fines educativos legítimos</li>
+                    <li>No compartir su cuenta, credenciales o contenido con terceros</li>
+                    <li>No reproducir, distribuir, modificar o crear obras derivadas del contenido sin autorización</li>
+                    <li>Respetar los derechos de propiedad intelectual de EDU MOOCS y terceros</li>
+                    <li>No realizar actividades que puedan dañar, interferir o sobrecargar la plataforma</li>
+                    <li>No utilizar bots, scripts o herramientas automatizadas</li>
+                    <li>Mantener un comportamiento respetuoso en foros y comentarios</li>
+                </ul>
+
+                <h4>5. Contenido y Cursos</h4>
+                <ul>
+                    <li>Los cursos están disponibles según el plan contratado y por tiempo limitado</li>
+                    <li>El contenido puede ser actualizado, modificado o removido sin previo aviso</li>
+                    <li>No garantizamos la disponibilidad continua de todos los cursos</li>
+                    <li>Los certificados se otorgan únicamente tras completar satisfactoriamente los requisitos del curso</li>
+                    <li>Los certificados no constituyen títulos académicos oficiales</li>
+                    <li>El progreso del curso se guarda automáticamente pero puede perderse por problemas técnicos</li>
+                </ul>
+
+                <h4>6. Pagos y Reembolsos</h4>
+                <ul>
+                    <li>Los pagos se procesan de forma segura a través de proveedores certificados</li>
+                    <li>Los reembolsos están disponibles dentro de los primeros 30 días de la compra</li>
+                    <li>Las suscripciones se renuevan automáticamente salvo cancelación previa</li>
+                    <li>Los precios pueden cambiar con notificación previa de 30 días</li>
+                    <li>Los descuentos y promociones tienen términos específicos</li>
+                    <li>No se otorgan reembolsos por cursos parcialmente completados después del período de garantía</li>
+                </ul>
+
+                <h4>7. Propiedad Intelectual</h4>
+                <p>
+                    Todo el contenido de EDU MOOCS, incluyendo textos, videos, código fuente, ejercicios, proyectos, diseños, marcas y materiales educativos, está protegido por derechos de autor, marcas registradas y otras leyes de propiedad intelectual. El uso del contenido está limitado a su aprendizaje personal.
+                </p>
+
+                <h4>8. Privacidad y Protección de Datos</h4>
+                <p>
+                    Su privacidad es fundamental para nosotros. Recopilamos, utilizamos y protegemos su información personal de acuerdo con nuestra Política de Privacidad. Al registrarse, consiente el procesamiento de sus datos según se describe en dicha política.
+                </p>
+
+                <h4>9. Conducta del Usuario</h4>
+                <p>Está prohibido:</p>
+                <ul>
+                    <li>Publicar contenido ofensivo, discriminatorio o inapropiado</li>
+                    <li>Acosar, intimidar o amenazar a otros usuarios</li>
+                    <li>Compartir información personal de terceros</li>
+                    <li>Realizar actividades comerciales no autorizadas</li>
+                    <li>Infringir derechos de terceros</li>
+                    <li>Intentar acceder a cuentas de otros usuarios</li>
+                </ul>
+
+                <h4>10. Limitación de Responsabilidad</h4>
+                <p>
+                    EDU MOOCS no será responsable por daños directos, indirectos, incidentales, especiales o consecuentes que puedan surgir del uso de la plataforma. Nuestro servicio se proporciona "tal como está" sin garantías de ningún tipo.
+                </p>
+
+                <h4>11. Disponibilidad del Servicio</h4>
+                <p>
+                    Aunque nos esforzamos por mantener la plataforma disponible 24/7, pueden ocurrir interrupciones por mantenimiento, actualizaciones o problemas técnicos. No garantizamos disponibilidad ininterrumpida del servicio.
+                </p>
+
+                <h4>12. Modificaciones de los Términos</h4>
+                <p>
+                    Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios significativos serán notificados por email y/o mediante aviso en la plataforma con al menos 30 días de anticipación.
+                </p>
+
+                <h4>13. Terminación de la Cuenta</h4>
+                <p>
+                    Podemos suspender o terminar su acceso a la plataforma en caso de violación de estos términos, actividad fraudulenta, o por cualquier otra razón justificada, con o sin previo aviso. Usted puede cancelar su cuenta en cualquier momento.
+                </p>
+
+                <h4>14. Ley Aplicable y Jurisdicción</h4>
+                <p>
+                    Estos términos se regirán e interpretarán de acuerdo con las leyes del país donde opera EDU MOOCS, sin dar efecto a ningún principio de conflictos de ley. Cualquier disputa será resuelta en los tribunales competentes de dicha jurisdicción.
+                </p>
+
+                <h4>15. Contacto y Soporte</h4>
+                <p>
+                    Para preguntas sobre estos términos, soporte técnico o cualquier consulta, puede contactarnos en:<br>
+                    <strong>Email:</strong> legal@edumoocs.com<br>
+                    <strong>Soporte:</strong> soporte@edumoocs.com<br>
+                    <strong>Teléfono:</strong> +1 (555) 123-4567<br>
+                    <strong>Dirección:</strong> 123 Education Street, Tech City, TC 12345<br>
+                    <strong>Horario de atención:</strong> Lunes a Viernes, 9:00 AM - 6:00 PM
                 </p>
             </div>
-            <form class="mt-8 space-y-6" method="POST" method="POST">
-                {% csrf_token %}
-                <div class="space-y-4">
-                    <div>
-                        <label for="full-name" class="block text-sm font-medium text-gray-700">Nombre completo</label>
-                        <input id="full-name" name="first_name" type="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                    </div>
-                    <div>
-                        <label for="full-name" class="block text-sm font-medium text-gray-700">Username</label>
-                        <input id="full-name" name="username" type="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                    </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                        <input id="email" name="email" type="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                    </div>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                        <input id="password" name="password1" type="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                    </div>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">Confirmar contraseña</label>
-                        <input id="password" name="password2" type="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                    </div>
-                </div>
-
-                <div class="flex items-center">
-                    <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                    <label for="terms" class="ml-2 block text-sm text-gray-900">
-                        Acepto los <a href="#" class="text-primary hover:text-blue-500">términos y condiciones</a>
-                    </label>
-                </div>
-
-                <div>
-                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                        Crear Cuenta
-                    </button>
-                    {% if form.errors %}
-                <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4 text-sm">
-                <strong>¡Revisa los errores del formulario!</strong>
-                <ul class="list-disc pl-5 mt-2">
-                {% for field in form %}
-                    {% for error in field.errors %}
-                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                </div>
-            {% endif %}
-
-                </div>
-            </form>
+        </div>
+        
+        <div class="modal-footer">
+            <button onclick="acceptTermsAndClose()" class="bg-primary hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mr-2">
+                Acepto los Términos
+            </button>
+            <button onclick="closeTermsModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                Cerrar
+            </button>
         </div>
     </div>
-    {%endblock%}
+</div>
 
-    {%block footer%}
-    {%endblock%}
+<script>
+    // Establecer la fecha actual
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES');
+    });
 
+    // Función para abrir el modal
+    function openTermsModal() {
+        document.getElementById('termsModal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
 
+    // Función para cerrar el modal
+    function closeTermsModal() {
+        document.getElementById('termsModal').classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Función para aceptar términos y cerrar modal
+    function acceptTermsAndClose() {
+        document.getElementById('terms').checked = true;
+        closeTermsModal();
+    }
+
+    // Cerrar modal al hacer clic fuera de él
+    window.onclick = function(event) {
+        const modal = document.getElementById('termsModal');
+        if (event.target === modal) {
+            closeTermsModal();
+        }
+    }
+
+    // Cerrar modal con la tecla Escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeTermsModal();
+        }
+    });
+
+    // Validación de contraseñas en tiempo real
+    function validatePasswords() {
+        const password1 = document.getElementById('password1').value;
+        const password2 = document.getElementById('password2').value;
+        const password2Field = document.getElementById('password2');
+        const errorMessage = document.getElementById('password-error');
+        const successMessage = document.getElementById('password-success');
+
+        if (password2 && password1 !== password2) {
+            password2Field.classList.add('password-mismatch');
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            return false;
+        } else if (password2 && password1 === password2) {
+            password2Field.classList.remove('password-mismatch');
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'block';
+            return true;
+        } else {
+            password2Field.classList.remove('password-mismatch');
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            return true;
+        }
+    }
+
+    // Event listeners para validación de contraseñas
+    document.getElementById('password1').addEventListener('input', validatePasswords);
+    document.getElementById('password2').addEventListener('input', validatePasswords);
+
+    // Validación del formulario
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        const termsCheckbox = document.getElementById('terms');
+        const password1 = document.getElementById('password1').value;
+        const firstName = document.getElementById('first-name').value;
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+
+        // Validar términos
+        if (!termsCheckbox.checked) {
+            e.preventDefault();
+            alert('Debe aceptar los términos y condiciones para continuar.');
+            return false;
+        }
+
+        // Validar contraseñas
+        if (!validatePasswords()) {
+            e.preventDefault();
+            alert('Las contraseñas no coinciden.');
+            return false;
+        }
+
+        // Validar longitud de contraseña
+        if (password1.length < 8) {
+            e.preventDefault();
+            alert('La contraseña debe tener al menos 8 caracteres.');
+            return false;
+        }
+
+        // Validar campos requeridos
+        if (!firstName.trim() || !username.trim() || !email.trim()) {
+            e.preventDefault();
+            alert('Por favor, complete todos los campos requeridos.');
+            return false;
+        }
+
+        // El formulario se enviará normalmente si pasa todas las validaciones
+    });
+</script>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
