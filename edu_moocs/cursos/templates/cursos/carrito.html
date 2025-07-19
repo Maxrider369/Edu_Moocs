@@ -1,47 +1,46 @@
 {% extends 'inicio/encabezado.html' %}
 {% load static %}
+{% block title %}Carrito{% endblock %}
 
-{%  block title %}
-Catalogo
-{%endblock%}
-
-    {% block contenido %}
-
-    <!-- Header -->
-    <div class="bg-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold text-gray-900">Carrito de Compras</h1>
-            <p class="text-gray-600 mt-2">Revisa tus cursos seleccionados</p>
-        </div>
+{% block contenido %}
+<!-- Header -->
+<div class="bg-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900">Carrito de Compras</h1>
+        <p class="text-gray-600 mt-2">Revisa tus cursos seleccionados</p>
     </div>
+</div>
 
-    <!-- Cart Content -->
+<!-- Cart Content -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="grid lg:grid-cols-3 gap-8">
         <!-- Cart Items -->
         <div class="lg:col-span-2">
             <div id="cart-items" class="space-y-4">
                 {% if cursos %}
-                    {% for cursos in cursos %}
-                    <div class="bg-white rounded-lg shadow-md p-4 flex items-center justify-between">
+                    {% for curso in cursos %}
+                    <div class="bg-white rounded-lg shadow-md p-4 flex items-center justify-between" 
+                         data-course-id="{{ curso.curso.id }}" 
+                         data-course-name="{{ curso.curso.nombre }}" 
+                         data-course-price="{{ curso.curso.precio }}">
                         <div class="flex items-center space-x-4">
-                            <img src="{{ cursos.curso.imagen.url }}" alt="{{ cursos.curso.nombre }}" class="w-24 h-24 object-cover rounded-md">
+                            <img src="{{ curso.curso.imagen.url }}" alt="{{ curso.curso.nombre }}" class="w-24 h-24 object-cover rounded-md">
                             <div>
-                                <h4 class="font-semibold text-lg">{{ cursos.curso.nombre }}</h4>
-                                <p class="text-gray-600 text-sm">{{ cursos.curso.descripcion|truncatewords:15 }}</p>
+                                <h4 class="font-semibold text-lg">{{ curso.curso.nombre }}</h4>
+                                <p class="text-gray-600 text-sm">{{ curso.curso.descripcion|truncatewords:15 }}</p>
                             </div>
                         </div>
-                            <form action="{% url 'eliminar_del_carrito' cursos.curso.id %}" method="POST">
-                                {% csrf_token %}
-                                <div class="flex items-center space-x-4">
-                                    <span class="text-2xl font-bold text-primary">${{ cursos.curso.precio }}</span>
-                                    <button class="text-red-500 hover:text-red-700 transition duration-300">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <form action="{% url 'eliminar_del_carrito' curso.curso.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="flex items-center space-x-4">
+                                <span class="text-2xl font-bold text-blue-600">${{ curso.curso.precio }}</span>
+                                <button type="submit" class="text-red-500 hover:text-red-700 transition duration-300">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </form>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
                     </div>
                     {% endfor %}
                 {% else %}
@@ -51,7 +50,7 @@ Catalogo
                         </svg>
                         <h3 class="text-lg font-medium text-gray-900 mt-4">Tu carrito está vacío</h3>
                         <p class="text-gray-500 mt-2">Explora nuestro catálogo y agrega cursos a tu carrito</p>
-                        <a href="{% url 'lista_cursos' %}" class="inline-block mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-blue-700 transition duration-300">
+                        <a href="{% url 'lista_cursos' %}" class="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition duration-300">
                             Ver Catálogo
                         </a>
                     </div>
@@ -72,16 +71,16 @@ Catalogo
                         <span>Descuento:</span>
                         <span id="discount" class="text-green-600">-$0</span>
                     </div>
-                    <hr>
+                    <hr class="my-2">
                     <div class="flex justify-between font-semibold text-lg">
                         <span>Total:</span>
                         <span id="total">${{ total }}</span>
                     </div>
                 </div>
-                <button id="checkout-btn" class="w-full bg-primary text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if not cursos %}disabled{% endif %}>
+                <button id="checkout-btn" type="button" class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if not cursos %}disabled{% endif %}>
                     Proceder al Pago
                 </button>
-                <button id="preregister-btn" class="w-full mt-2 bg-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if not cursos %}disabled{% endif %}>
+                <button id="preregister-btn" type="button" class="w-full mt-2 bg-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if not cursos %}disabled{% endif %}>
                     Pre-inscribirse
                 </button>
             </div>
@@ -89,4 +88,455 @@ Catalogo
     </div>
 </div>
 
-{%endblock%}
+<!-- Payment Modal -->
+<div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-out scale-95 opacity-0" id="modal-content">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-2">
+                    <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                    <h2 class="text-2xl font-bold text-gray-900">Información de Pago</h2>
+                </div>
+                <button id="close-modal" type="button" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="payment-form" class="space-y-6">
+                <!-- Card Information -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <svg class="h-5 w-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        Información de la Tarjeta
+                    </h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Número de Tarjeta</label>
+                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del Titular</label>
+                            <input type="text" id="card-name" placeholder="JUAN PÉREZ" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" required>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Mes</label>
+                                <select id="expiry-month" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" required>
+                                    <option value="">MM</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Año</label>
+                                <select id="expiry-year" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" required>
+                                    <option value="">YYYY</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">CVV</label>
+                                <input type="text" id="cvv" placeholder="123" maxlength="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Email de Confirmación</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" placeholder="tu@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" required>
+                        <p class="text-sm text-gray-500 mt-1">Recibirás la confirmación de compra y acceso a los cursos en este email</p>
+                    </div>
+                </div>
+
+                <!-- Billing Information -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Información de Facturación</h3>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" id="billing-toggle" class="sr-only">
+                            <div class="relative">
+                                <div class="block bg-gray-300 w-14 h-8 rounded-full transition duration-300"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 ease-in-out"></div>
+                            </div>
+                            <span class="ml-3 text-sm text-gray-600">Opcional</span>
+                        </label>
+                    </div>
+                    <div id="billing-section" class="hidden transition-all duration-300 ease-in-out">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
+                                <input type="text" id="address" placeholder="Calle Principal 123" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ciudad</label>
+                                    <input type="text" id="city" placeholder="Ciudad" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Código Postal</label>
+                                    <input type="text" id="zip-code" placeholder="12345" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">País</label>
+                                <select id="country" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                                    <option value="">Seleccionar país</option>
+                                    <option value="MX">México</option>
+                                    <option value="ES">España</option>
+                                    <option value="AR">Argentina</option>
+                                    <option value="CO">Colombia</option>
+                                    <option value="PE">Perú</option>
+                                    <option value="CL">Chile</option>
+                                    <option value="US">Estados Unidos</option>
+                                    <option value="OTHER">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Resumen del Pedido</h3>
+                    <div id="modal-cart-summary" class="space-y-1 text-sm">
+                        <!-- Cart items will be populated here -->
+                    </div>
+                    <hr class="my-2">
+                    <div class="flex justify-between font-semibold text-lg">
+                        <span>Total:</span>
+                        <span id="modal-total">$0</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-4">
+                    <button type="button" id="cancel-payment" class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="process-payment" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="payment-btn-text">Pagar $0</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Success Notification -->
+<div id="success-notification" class="fixed top-4 right-4 z-50 transform translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg max-w-sm">
+        <div class="flex items-center">
+            <svg class="h-6 w-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <h4 class="font-semibold">¡Pago Exitoso!</h4>
+                <p class="text-sm">Cursos agregados a tu biblioteca</p>
+            </div>
+        </div>
+        <div class="mt-2">
+            <button id="close-notification" class="text-green-200 hover:text-white text-sm underline">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Integrated JavaScript -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM loaded, initializing cart functionality...");
+    
+    // Initialize functionality
+    initializeEventListeners()
+    populateYearOptions()
+    setupCardNumberFormatting()
+})
+
+function initializeEventListeners() {
+    console.log("Setting up event listeners...");
+    
+    // Modal elements
+    const paymentModal = document.getElementById("payment-modal")
+    const modalContent = document.getElementById("modal-content")
+    const closeModalBtn = document.getElementById("close-modal")
+    const cancelPaymentBtn = document.getElementById("cancel-payment")
+    const billingToggle = document.getElementById("billing-toggle")
+    const billingSection = document.getElementById("billing-section")
+    const paymentForm = document.getElementById("payment-form")
+    const checkoutBtn = document.getElementById("checkout-btn")
+    const preregisterBtn = document.getElementById("preregister-btn")
+
+    // Checkout button - Open modal
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener("click", function (e) {
+            e.preventDefault()
+            if (this.disabled) return
+
+            console.log("Opening payment modal...")
+            loadModalCartSummary()
+            
+            // Show modal with animation
+            paymentModal.classList.remove("hidden")
+            document.body.style.overflow = "hidden"
+            
+            // Trigger animation
+            setTimeout(() => {
+                modalContent.classList.remove("scale-95", "opacity-0")
+                modalContent.classList.add("scale-100", "opacity-100")
+            }, 10)
+        })
+    }
+
+    // Pre-register button
+    if (preregisterBtn) {
+        preregisterBtn.addEventListener("click", function (e) {
+            e.preventDefault()
+            if (this.disabled) return
+
+            alert("Pre-inscripción exitosa! Te notificaremos cuando el curso esté disponible.")
+        })
+    }
+
+    // Close modal buttons
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener("click", closeModal)
+    }
+
+    if (cancelPaymentBtn) {
+        cancelPaymentBtn.addEventListener("click", closeModal)
+    }
+
+    // Close modal when clicking outside
+    if (paymentModal) {
+        paymentModal.addEventListener("click", (e) => {
+            if (e.target === paymentModal) {
+                closeModal()
+            }
+        })
+    }
+
+    // Escape key to close modal
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !paymentModal.classList.contains("hidden")) {
+            closeModal()
+        }
+    })
+
+    // Billing toggle
+    if (billingToggle && billingSection) {
+        billingToggle.addEventListener("change", function () {
+            const toggleSwitch = this.nextElementSibling
+            const dot = toggleSwitch.querySelector('.dot')
+            
+            if (this.checked) {
+                billingSection.classList.remove("hidden")
+                toggleSwitch.classList.remove("bg-gray-300")
+                toggleSwitch.classList.add("bg-blue-600")
+                dot.style.transform = "translateX(1.5rem)"
+            } else {
+                billingSection.classList.add("hidden")
+                toggleSwitch.classList.remove("bg-blue-600")
+                toggleSwitch.classList.add("bg-gray-300")
+                dot.style.transform = "translateX(0)"
+            }
+        })
+    }
+
+    // Payment form submission
+    if (paymentForm) {
+        paymentForm.addEventListener("submit", (e) => {
+            e.preventDefault()
+            processPayment()
+        })
+    }
+}
+
+function closeModal() {
+    const paymentModal = document.getElementById("payment-modal")
+    const modalContent = document.getElementById("modal-content")
+    
+    if (paymentModal && modalContent) {
+        // Animate out
+        modalContent.classList.remove("scale-100", "opacity-100")
+        modalContent.classList.add("scale-95", "opacity-0")
+        
+        // Hide modal after animation
+        setTimeout(() => {
+            paymentModal.classList.add("hidden")
+            document.body.style.overflow = ""
+        }, 300)
+    }
+}
+
+function getCartDataFromDOM() {
+    // Get cart data from Django-rendered HTML
+    const cartItems = []
+    const cartElements = document.querySelectorAll('[data-course-id]')
+    
+    cartElements.forEach(element => {
+        const courseData = {
+            id: element.getAttribute('data-course-id'),
+            name: element.getAttribute('data-course-name'),
+            price: parseFloat(element.getAttribute('data-course-price'))
+        }
+        cartItems.push(courseData)
+    })
+    
+    return cartItems
+}
+
+function loadModalCartSummary() {
+    // Get cart data from DOM instead of localStorage
+    const cart = getCartDataFromDOM()
+    const summaryContainer = document.getElementById("modal-cart-summary")
+    const totalElement = document.getElementById("modal-total")
+    const payBtnText = document.getElementById("payment-btn-text")
+
+    if (!summaryContainer || !totalElement || !payBtnText) return
+
+    if (cart.length === 0) {
+        summaryContainer.innerHTML = '<p class="text-gray-500">Tu carrito está vacío.</p>'
+        totalElement.textContent = "$0"
+        payBtnText.textContent = "Pagar $0"
+        return
+    }
+
+    let html = ""
+    let total = 0
+    cart.forEach((item) => {
+        html += `
+            <div class="flex justify-between text-sm py-1">
+                <span class="text-gray-700">${item.name}</span>
+                <span class="font-medium">$${item.price}</span>
+            </div>
+        `
+        total += item.price
+    })
+
+    summaryContainer.innerHTML = html
+    totalElement.textContent = `$${total}`
+    payBtnText.textContent = `Pagar $${total}`
+}
+
+function populateYearOptions() {
+    const yearSelect = document.getElementById("expiry-year")
+    if (!yearSelect) return
+
+    const currentYear = new Date().getFullYear()
+    for (let i = 0; i < 20; i++) {
+        const year = currentYear + i
+        const option = document.createElement("option")
+        option.value = year
+        option.textContent = year
+        yearSelect.appendChild(option)
+    }
+}
+
+function setupCardNumberFormatting() {
+    const cardNumberInput = document.getElementById("card-number")
+    if (!cardNumberInput) return
+
+    cardNumberInput.addEventListener("input", (e) => {
+        const value = e.target.value.replace(/\s/g, "").replace(/[^0-9]/gi, "")
+        let formattedValue = value.match(/.{1,4}/g)?.join(" ") || value
+        if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19)
+        e.target.value = formattedValue
+    })
+
+    // CVV input - only numbers
+    const cvvInput = document.getElementById("cvv")
+    if (cvvInput) {
+        cvvInput.addEventListener("input", (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, "")
+        })
+    }
+}
+
+function processPayment() {
+    const processBtn = document.getElementById("process-payment")
+    const originalText = processBtn.innerHTML
+
+    processBtn.disabled = true
+    processBtn.innerHTML = `
+        <span class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Procesando...
+        </span>
+    `
+
+    // Get cart data for processing
+    const cartData = getCartDataFromDOM()
+    console.log("Processing payment for:", cartData)
+
+    // Simulate payment processing
+    setTimeout(() => {
+        // Reset button
+        processBtn.disabled = false
+        processBtn.innerHTML = originalText
+
+        // Close modal
+        closeModal()
+
+        // Show success notification
+        showSuccessNotification()
+
+        // Here you could redirect to a success page or refresh the cart
+        // window.location.href = '/success/';
+    }, 2000)
+}
+
+function showSuccessNotification() {
+    const notification = document.getElementById("success-notification")
+    const closeNotificationBtn = document.getElementById("close-notification")
+
+    if (notification) {
+        notification.classList.remove("translate-x-full")
+        notification.classList.add("translate-x-0")
+
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            hideSuccessNotification()
+        }, 5000)
+    }
+
+    if (closeNotificationBtn) {
+        closeNotificationBtn.addEventListener("click", hideSuccessNotification)
+    }
+}
+
+function hideSuccessNotification() {
+    const notification = document.getElementById("success-notification")
+    if (notification) {
+        notification.classList.remove("translate-x-0")
+        notification.classList.add("translate-x-full")
+    }
+}
+
+// Load modal summary on page load
+loadModalCartSummary()
+</script>
+
+{% endblock %}
