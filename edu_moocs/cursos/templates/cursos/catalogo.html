@@ -1,69 +1,64 @@
 {% extends 'inicio/encabezado.html' %}
 {% load static %}
+{% block title %}Catalogo{% endblock %}
 
-{%  block title %}
-Catalogo
-{%endblock%}
+{% block contenido %}
+<!-- Header -->
+<div class="bg-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900">Catálogo de Cursos</h1>
+        <p class="text-gray-600 mt-2">Descubre todos nuestros cursos disponibles</p>
+    </div>
+</div>
 
-    {% block contenido %}
-
-    <!-- Header -->
-    <div class="bg-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold text-gray-900">Catálogo de Cursos</h1>
-            <p class="text-gray-600 mt-2">Descubre todos nuestros cursos disponibles</p>
+<!-- Filters -->
+<div class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex flex-wrap gap-4">
+            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option>Todas las categorías</option>
+                <option>Matemáticas</option>
+                <option>Programación</option>
+                <option>Ciencias</option>
+                <option>Idiomas</option>
+            </select>
+            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option>Todos los niveles</option>
+                <option>Principiante</option>
+                <option>Intermedio</option>
+                <option>Avanzado</option>
+            </select>
+            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option>Ordenar por</option>
+                <option>Más populares</option>
+                <option>Precio: menor a mayor</option>
+                <option>Precio: mayor a menor</option>
+                <option>Más recientes</option>
+            </select>
         </div>
     </div>
+</div>
 
-    <!-- Filters -->
-    <div class="bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-wrap gap-4">
-                <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                    <option>Todas las categorías</option>
-                    <option>Matemáticas</option>
-                    <option>Programación</option>
-                    <option>Ciencias</option>
-                    <option>Idiomas</option>
-                </select>
-                <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                    <option>Todos los niveles</option>
-                    <option>Principiante</option>
-                    <option>Intermedio</option>
-                    <option>Avanzado</option>
-                </select>
-                <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                    <option>Ordenar por</option>
-                    <option>Más populares</option>
-                    <option>Precio: menor a mayor</option>
-                    <option>Precio: mayor a menor</option>
-                    <option>Más recientes</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <!-- Course Grid -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Course Grid -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for curso in cursos %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer course-card"
+             onclick="openModal('{{ curso.id }}', '{{ curso.nombre|escapejs }}', '{{ curso.descripcion|escapejs }}', '{{ curso.imagen.url }}', '{{ curso.precio }}')">
             <div class="h-40 overflow-hidden rounded-lg">
                 <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover">
             </div>
-
             <div class="p-4">
                 <h3 class="text-lg font-semibold mb-2">{{ curso.nombre }}</h3>
-                <p class="text-gray-600 text-sm mb-3">{{ curso.descripcion }}</p>
+                
                 <div class="flex items-center mb-3">
                     <div class="flex text-yellow-400">
-                        <span>★★★★★</span>
+                        <!-- Stars here -->
                     </div>
-                    <span class="text-gray-500 text-sm ml-2">(4.8)</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-xl font-bold text-primary">${{ curso.precio }}</span>
-                    <form action="{% url 'agregar_al_carrito' curso.id %}" method="POST" class="inline">
+                    <form action="{% url 'agregar_al_carrito' curso.id %}" method="POST" class="inline" onclick="event.stopPropagation();">
                         {% csrf_token %}
                         <button type="submit" class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition duration-300">
                             Agregar
@@ -76,9 +71,83 @@ Catalogo
     </div>
 </div>
 
+<!-- Modal -->
+<div id="courseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center p-6 border-b">
+            <h2 id="modalTitle" class="text-2xl font-bold text-gray-900"></h2>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
+                &times;
+            </button>
         </div>
-
+        
+        <!-- Modal Content -->
+        <div class="p-6">
+            <div class="mb-6">
+                <img id="modalImage" src="/placeholder.svg" alt="" class="w-full h-64 object-cover rounded-lg">
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3 text-gray-900">Descripción del curso</h3>
+                <p id="modalDescription" class="text-gray-600 leading-relaxed"></p>
+            </div>
+            
+            <div class="flex items-center justify-between pt-4 border-t">
+                <div class="flex items-center">
+                    <span class="text-3xl font-bold text-primary" id="modalPrice"></span>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
+                        Cerrar
+                    </button>
+                    <form id="modalAddToCartForm" method="POST" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300">
+                            Agregar al Carrito
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-{%endblock%}
+</div>
 
+<script>
+function openModal(cursoId, nombre, descripcion, imagen, precio) {
+    // Actualizar contenido del modal
+    document.getElementById('modalTitle').textContent = nombre;
+    document.getElementById('modalDescription').textContent = descripcion;
+    document.getElementById('modalImage').src = imagen;
+    document.getElementById('modalImage').alt = nombre;
+    document.getElementById('modalPrice').textContent = '$' + precio;
+    
+    // Actualizar la acción del formulario
+    document.getElementById('modalAddToCartForm').action = "{% url 'agregar_al_carrito' 0 %}".replace('0', cursoId);
+    
+    // Mostrar modal
+    document.getElementById('courseModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+}
+
+function closeModal() {
+    document.getElementById('courseModal').classList.add('hidden');
+    document.body.style.overflow = 'auto'; // Restaurar scroll del body
+}
+
+// Cerrar modal al hacer clic fuera de él
+document.getElementById('courseModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+// Cerrar modal con tecla Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+</script>
+
+{% endblock %}
