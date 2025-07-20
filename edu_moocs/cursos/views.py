@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Curso, Carrito, CursoEnCarrito
+from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado
 from django.contrib.auth.decorators import login_required
+from decimal import Decimal
+from django.utils import timezone
 
 def lista_cursos(request):
     cursos = Curso.objects.filter(disponible=True)
@@ -33,4 +35,50 @@ def eliminar_del_carrito(request, curso_id):
 
 def detalle_curso(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
-    return render(request, 'cursos/detalle-curso.html', {'curso': curso})
+    return render(request, 'cursos/deta-curso.html', {'curso': curso})
+
+@login_required
+def procesar_compra(request):
+    if request.method != 'POST':
+
+        print("✅ FORMULARIO ENVIADO, PROCESANDO COMPRA...")
+        return redirect('ver_carrito')
+
+    try:
+        carrito = Carrito.objects.get(usuario=request.user)
+    except Carrito.DoesNotExist:
+        return redirect('ver_carrito')
+
+    cursos_en_carrito = carrito.cursos.select_related('curso')
+    total_a_sumar = Decimal('0.00')
+
+    for curso_en_carrito in cursos_en_carrito:
+        curso = curso_en_carrito.curso
+
+        if not CursoComprado.objects.filter(usuario=request.user, curso=curso).exists():
+            CursoComprado.objects.create(
+                usuario=request.user,
+                curso=curso,
+                fecha_compra=timezone.now()
+            )
+            total_a_sumar += curso.precio
+
+    cursos_en_carrito.delete()
+
+    if total_a_sumar > 0:
+        total_obj, _ = TotalGastado.objects.get_or_create(usuario=request.user)
+        total_obj.total += total_a_sumar
+        total_obj.save()
+
+    return redirect('mis_cursos')
+
+def mis_cursos(request):
+    cursos_comprados = CursoComprado.objects.filter(usuario=request.user).select_related('curso')
+    total_obj = TotalGastado.objects.filter(usuario=request.user).first()
+    total_gastado = total_obj.total if total_obj else 0
+
+    return render(request, 'cursos/mis-cursos.html', {
+        'cursos': cursos_comprados,
+        'total_gastado': total_gastado
+    })
+

@@ -29,3 +29,21 @@ class CursoEnCarrito(models.Model):
     def __str__(self):
         return self.curso.nombre
 
+class CursoComprado(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cursos_comprados')
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    fecha_compra = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.username} compró {self.curso.nombre}"
+
+    class Meta:
+        unique_together = ('usuario', 'curso')  # Evita compras duplicadas
+
+class TotalGastado(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='total_gastado')
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return f"{self.usuario.username} ha gastado ${self.total}"
+
