@@ -3,54 +3,57 @@
 {% block title %}Mis Cursos{% endblock %}
 
 {% block contenido %}
-    <!-- Header -->
-    <div class="bg-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold text-gray-900">Mis Cursos</h1>
-            <p class="text-gray-600 mt-2">Continúa tu aprendizaje</p>
-        </div>
+<!-- Header -->
+<div class="bg-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900">Mis Cursos</h1>
+        <p class="text-gray-600 mt-2">Continúa tu aprendizaje</p>
     </div>
+</div>
 
-    {% if cursos %}
-    {% for curso_comprado in cursos %}
+{% if cursos %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Grid para todas las tarjetas -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for curso_comprado in cursos %}
         {% with curso=curso_comprado.curso %}
-    <!-- Course Progress -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Course 1 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="h-40 bg-gradient-to-r from-blue-400 to-blue-600">
-                    {% if curso.imagen %}
-                    <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover">
-                    {% else %}
-                    <div class="h-full w-full bg-gradient-to-r from-gray-400 to-gray-600"></div>
-                    {% endif %}
+        <!-- Tarjeta de curso -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="h-40 bg-gradient-to-r from-blue-400 to-blue-600">
+                {% if curso.imagen %}
+                <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="h-full w-full bg-gradient-to-r from-gray-400 to-gray-600"></div>
+                {% endif %}
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-2">{{ curso.nombre }}</h3>
+                <p class="text-gray-600 mb-4">Progreso del curso</p>
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>Progreso</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                    </div>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-2">{{ curso.nombre }}</h3>
-                    <p class="text-gray-600 mb-4">Progreso del curso</p>
-                    <div class="mb-4">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Progreso</span>
-                            <span>75%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">12/16 lecciones</span>
-                        <a href="detalle-curso.html" class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
-                            Continuar
-                        </a>
-                    </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">12/16 lecciones</span>
+                    <a href="detalle-curso.html" class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
+                        Continuar
+                    </a>
                 </div>
             </div>
         </div>
+        {% endwith %}
+        {% endfor %}
     </div>
-    {% endwith %}
-    {% endfor %}
-    {% else %}
-    
-    {% endif %}
+</div>
+{% else %}
+<div class="max-w-7xl mx-auto px-4 py-8 text-gray-600">
+    No tienes cursos aún.
+</div>
+{% endif %}
 {% endblock %}
+
