@@ -38,11 +38,12 @@
                 <a href="{% url 'lista_cursos' %}" class="text-primary font-medium">CATÁLOGO</a>
 
                 {% if request.user.is_authenticated %}
-                    <a href="#" class=" hover:text-primary">MIS CURSOS</a>
+                    <a href="{% url 'mis_cursos' %}" class=" hover:text-primary">MIS CURSOS</a>
                     <a href="{% url 'ver_carrito' %}" class="text-gray-600 hover:text-primary relative">CARRITO</a>
                 {% endif %}
 
-                <a href="{% url 'contacto' %}" class="text-gray-600 hover:text-primary">CONÓCENOS</a>
+
+                <a href="{% url 'contacto' %}" class="text-gray-600 hover:text-primary">CONOCENOS</a>
 
                 {% if not request.user.is_authenticated %}
                     <a href="{% url 'login' %}" class="text-gray-600 hover:text-primary">LOGIN</a>

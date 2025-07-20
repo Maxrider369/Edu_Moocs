@@ -99,7 +99,8 @@
                 </button>
             </div>
 
-            <form id="payment-form" class="space-y-6">
+            <form id="payment-form" class="space-y-6" method="POST" action="{% url 'procesar_compra' %}" >
+                {% csrf_token %}
                 <!-- Card Information -->
                 <div class="bg-gray-50 p-4 rounded-lg">
                     <h3 class="text-lg font-semibold mb-4 flex items-center">
@@ -358,8 +359,7 @@ function initializeEventListeners() {
     // Payment form submission
     if (paymentForm) {
         paymentForm.addEventListener("submit", (e) => {
-            e.preventDefault()
-            processPayment()
+            
         })
     }
 }
