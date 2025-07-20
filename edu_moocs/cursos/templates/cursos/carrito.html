@@ -67,10 +67,6 @@
                         <span>Subtotal:</span>
                         <span id="subtotal">${{ total }}</span>
                     </div>
-                    <div class="flex justify-between">
-                        <span>Descuento:</span>
-                        <span id="discount" class="text-green-600">-$0</span>
-                    </div>
                     <hr class="my-2">
                     <div class="flex justify-between font-semibold text-lg">
                         <span>Total:</span>
@@ -79,9 +75,6 @@
                 </div>
                 <button id="checkout-btn" type="button" class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if not cursos %}disabled{% endif %}>
                     Proceder al Pago
-                </button>
-                <button id="preregister-btn" type="button" class="w-full mt-2 bg-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if not cursos %}disabled{% endif %}>
-                    Pre-inscribirse
                 </button>
             </div>
         </div>

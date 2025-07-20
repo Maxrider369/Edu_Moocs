@@ -1,25 +1,258 @@
 {% extends 'inicio/encabezado.html' %}
+{% block title %}Conócenos{% endblock %}
 
-{%  block title %}
-Contacto
-{%endblock%}
+{% block contenido %}
+<!-- Header -->
+<div class="bg-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900">Conócenos</h1>
+        <p class="text-gray-600 mt-2">Descubre quiénes somos y nuestra pasión por la educación virtual</p>
+    </div>
+</div>
 
-    {% block contenido %}
-    <!-- Header -->
-    <div class="bg-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold text-gray-900">Contacto</h1>
-            <p class="text-gray-600 mt-2">Estamos aquí para ayudarte. Contáctanos para cualquier consulta</p>
+<!-- Hero Section About Us -->
+<section class="relative bg-gradient-to-br from-primary via-blue-600 to-blue-700 text-white py-20 overflow-hidden">
+    <!-- Elementos decorativos animados -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="floating-element absolute top-20 left-10 w-20 h-20 bg-white rounded-full"></div>
+        <div class="floating-element-delayed absolute top-40 right-20 w-16 h-16 bg-white rounded-full"></div>
+        <div class="floating-element absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full"></div>
+        <div class="floating-element-delayed absolute bottom-40 right-1/3 w-24 h-24 bg-white rounded-full"></div>
+    </div>
+    
+    <!-- Patrón de puntos sutil -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="dots-pattern"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center">
+            <!-- Logo/Título con animación -->
+            <div class="mb-8">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4 tracking-tight">
+                    <span class="inline-block animate-fade-in-up">E</span>
+                    <span class="inline-block animate-fade-in-up animation-delay-100">D</span>
+                    <span class="inline-block animate-fade-in-up animation-delay-200">U</span>
+                    <span class="inline-block animate-fade-in-up animation-delay-300 mx-4">M</span>
+                    <span class="inline-block animate-fade-in-up animation-delay-400">O</span>
+                    <span class="inline-block animate-fade-in-up animation-delay-500">O</span>
+                    <span class="inline-block animate-fade-in-up animation-delay-600">C</span>
+                    <span class="inline-block animate-fade-in-up animation-delay-700">S</span>
+                </h2>
+                <div class="w-24 h-1 bg-white mx-auto rounded-full animate-scale-in animation-delay-800"></div>
+            </div>
+            
+            <!-- Descripción con animación -->
+            <div class="animate-fade-in-up animation-delay-1000">
+                <p class="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed font-light">
+                    Transformando la educación a través de la 
+                    <span class="font-semibold text-blue-200">tecnología</span> y la 
+                    <span class="font-semibold text-blue-200">innovación</span>,
+                    <br class="hidden md:block">
+                    conectando estudiantes con conocimiento de calidad desde cualquier lugar del mundo.
+                </p>
+            </div>
+            
+            <!-- Iconos minimalistas -->
+            <div class="flex justify-center space-x-8 mt-12 animate-fade-in-up animation-delay-1200">
+                <div class="flex flex-col items-center group">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-2 group-hover:bg-opacity-30 transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <span class="text-sm opacity-80">Calidad</span>
+                </div>
+                
+                <div class="flex flex-col items-center group">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-2 group-hover:bg-opacity-30 transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-sm opacity-80">Innovación</span>
+                </div>
+                
+                <div class="flex flex-col items-center group">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-2 group-hover:bg-opacity-30 transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-sm opacity-80">Global</span>
+                </div>
+            </div>
         </div>
     </div>
+</section>
 
-    <!-- Contact Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Company Story -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h3 class="text-3xl font-bold text-gray-900 mb-6">Nuestra Historia</h3>
+                <div class="space-y-4 text-gray-600">
+                    <p>
+                        EDU MOOCS nació en 2020 con una visión clara: democratizar el acceso a la educación de calidad. 
+                        Fundada por un equipo de educadores y tecnólogos apasionados, nuestra plataforma surge de la 
+                        necesidad de crear un espacio donde el aprendizaje no tenga fronteras.
+                    </p>
+                    <p>
+                        Comenzamos con apenas 10 cursos y hoy contamos con más de 500 programas académicos, 
+                        atendiendo a miles de estudiantes en toda Latinoamérica. Nuestro crecimiento se basa 
+                        en la confianza de nuestros usuarios y la calidad de nuestros contenidos.
+                    </p>
+                    <p>
+                        Cada curso es desarrollado por expertos en la materia, garantizando que nuestros estudiantes 
+                        reciban una educación actualizada, práctica y relevante para el mundo actual.
+                    </p>
+                </div>
+            </div>
+            <div class="bg-gray-100 rounded-lg p-8">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary mb-2">2020</div>
+                        <div class="text-sm text-gray-600">Año de Fundación</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary mb-2">500+</div>
+                        <div class="text-sm text-gray-600">Cursos Disponibles</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary mb-2">10K+</div>
+                        <div class="text-sm text-gray-600">Estudiantes</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary mb-2">15+</div>
+                        <div class="text-sm text-gray-600">Países</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission, Vision, Values -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-gray-900">Nuestros Pilares</h3>
+            <p class="text-gray-600 mt-4">Los valores que nos guían en nuestra misión educativa</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Misión -->
+            <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Misión</h4>
+                <p class="text-gray-600">
+                    Proporcionar educación virtual de alta calidad, accesible y flexible, 
+                    que empodere a las personas para alcanzar sus metas académicas y profesionales.
+                </p>
+            </div>
+            
+            <!-- Visión -->
+            <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Visión</h4>
+                <p class="text-gray-600">
+                    Ser la plataforma educativa virtual líder en Latinoamérica, 
+                    reconocida por la excelencia de nuestros cursos y el éxito de nuestros estudiantes.
+                </p>
+            </div>
+            
+            <!-- Valores -->
+            <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Valores</h4>
+                <p class="text-gray-600">
+                    Calidad, innovación, accesibilidad, compromiso con el estudiante 
+                    y mejora continua en todo lo que hacemos.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-gray-900">¿Por qué elegir EDU MOOCS?</h3>
+            <p class="text-gray-600 mt-4">Características que nos hacen únicos en el mundo de la educación virtual</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-semibold mb-2">Contenido de Calidad</h4>
+                <p class="text-gray-600">Cursos desarrollados por expertos académicos y profesionales de la industria</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-semibold mb-2">Flexibilidad Total</h4>
+                <p class="text-gray-600">Aprende a tu propio ritmo, cuando quieras y desde donde estés</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-semibold mb-2">Certificación</h4>
+                <p class="text-gray-600">Obtén certificados reconocidos que validen tus nuevas habilidades</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-semibold mb-2">Soporte 24/7</h4>
+                <p class="text-gray-600">Asistencia continua para resolver todas tus dudas y consultas</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-gray-900">Contáctanos</h3>
+            <p class="text-gray-600 mt-4">¿Tienes alguna pregunta? Estamos aquí para ayudarte</p>
+        </div>
+        
         <div class="grid lg:grid-cols-2 gap-12">
             <!-- Contact Information -->
             <div class="space-y-8">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Información de Contacto</h2>
+                    <h4 class="text-xl font-bold text-gray-900 mb-6">Información de Contacto</h4>
                     <div class="space-y-6">
                         <div class="flex items-start space-x-4">
                             <div class="bg-blue-100 p-3 rounded-lg">
@@ -29,7 +262,7 @@ Contacto
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900">Dirección</h3>
+                                <h5 class="font-semibold text-gray-900">Dirección</h5>
                                 <p class="text-gray-600 mt-1">
                                     Av. Educación 123<br>
                                     Ciudad Universitaria<br>
@@ -37,7 +270,7 @@ Contacto
                                 </p>
                             </div>
                         </div>
-
+                        
                         <div class="flex items-start space-x-4">
                             <div class="bg-blue-100 p-3 rounded-lg">
                                 <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,12 +278,12 @@ Contacto
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900">Teléfono</h3>
+                                <h5 class="font-semibold text-gray-900">Teléfono</h5>
                                 <p class="text-gray-600 mt-1">+52 55 1234 5678</p>
                                 <p class="text-gray-600">+52 55 8765 4321</p>
                             </div>
                         </div>
-
+                        
                         <div class="flex items-start space-x-4">
                             <div class="bg-blue-100 p-3 rounded-lg">
                                 <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,12 +291,12 @@ Contacto
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900">Email</h3>
+                                <h5 class="font-semibold text-gray-900">Email</h5>
                                 <p class="text-gray-600 mt-1">info@edumoocs.com</p>
                                 <p class="text-gray-600">soporte@edumoocs.com</p>
                             </div>
                         </div>
-
+                        
                         <div class="flex items-start space-x-4">
                             <div class="bg-blue-100 p-3 rounded-lg">
                                 <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +304,7 @@ Contacto
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900">Horarios de Atención</h3>
+                                <h5 class="font-semibold text-gray-900">Horarios de Atención</h5>
                                 <p class="text-gray-600 mt-1">
                                     Lunes a Viernes: 9:00 AM - 6:00 PM<br>
                                     Sábados: 10:00 AM - 2:00 PM<br>
@@ -81,40 +314,17 @@ Contacto
                         </div>
                     </div>
                 </div>
-
-                <!-- Quick Stats -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">¿Por qué elegirnos?</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-primary">500+</div>
-                            <div class="text-sm text-gray-600">Cursos Disponibles</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-primary">10K+</div>
-                            <div class="text-sm text-gray-600">Estudiantes Activos</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-primary">24/7</div>
-                            <div class="text-sm text-gray-600">Soporte Online</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-primary">98%</div>
-                            <div class="text-sm text-gray-600">Satisfacción</div>
-                        </div>
-                    </div>
-                </div>
             </div>
-
+            
             <!-- Contact Form -->
             <div class="bg-white rounded-lg shadow-md p-8">
                 <div class="flex items-center space-x-3 mb-6">
                     <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                     </svg>
-                    <h2 class="text-2xl font-bold text-gray-900">Envíanos un Mensaje</h2>
+                    <h4 class="text-xl font-bold text-gray-900">Envíanos un Mensaje</h4>
                 </div>
-
+                
                 <form id="contact-form" class="space-y-6">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
@@ -134,7 +344,7 @@ Contacto
                             >
                         </div>
                     </div>
-
+                    
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                             Correo Electrónico *
@@ -153,7 +363,7 @@ Contacto
                             >
                         </div>
                     </div>
-
+                    
                     <div>
                         <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
                             Asunto *
@@ -172,7 +382,7 @@ Contacto
                             <option value="otro">Otro</option>
                         </select>
                     </div>
-
+                    
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
                             Mensaje *
@@ -186,7 +396,7 @@ Contacto
                             placeholder="Escribe tu mensaje aquí..."
                         ></textarea>
                     </div>
-
+                    
                     <button
                         type="submit"
                         class="w-full bg-primary text-white py-3 px-6 rounded-md hover:bg-blue-700 transition duration-300 flex items-center justify-center space-x-2 font-medium"
@@ -197,7 +407,7 @@ Contacto
                         <span>Enviar Mensaje</span>
                     </button>
                 </form>
-
+                
                 <div class="mt-6 p-4 bg-blue-50 rounded-lg">
                     <p class="text-sm text-blue-800">
                         <strong>Tiempo de respuesta:</strong> Normalmente respondemos en menos de 24 horas durante días hábiles.
@@ -205,27 +415,30 @@ Contacto
                 </div>
             </div>
         </div>
-    <script>
-        // Manejo del formulario de contacto
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Obtener los datos del formulario
-            const formData = new FormData(this);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                subject: formData.get('subject'),
-                message: formData.get('message')
-            };
-            
-            // Simular envío del formulario
-            console.log('Formulario enviado:', data);
-            alert('¡Mensaje enviado correctamente! Te contactaremos pronto.');
-            
-            // Limpiar el formulario
-            this.reset();
-        });
-    </script>
     </div>
-{%endblock%}
+</section>
+
+<script>
+    // Manejo del formulario de contacto
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Obtener los datos del formulario
+        const formData = new FormData(this);
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            subject: formData.get('subject'),
+            message: formData.get('message')
+        };
+        
+        // Simular envío del formulario
+        console.log('Formulario enviado:', data);
+        alert('¡Mensaje enviado correctamente! Te contactaremos pronto.');
+        
+        // Limpiar el formulario
+        this.reset();
+    });
+</script>
+
+{% endblock %}
