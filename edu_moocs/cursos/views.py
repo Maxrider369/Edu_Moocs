@@ -5,8 +5,16 @@ from decimal import Decimal
 from django.utils import timezone
 
 def lista_cursos(request):
-    cursos = Curso.objects.filter(disponible=True)
-    return render(request, 'cursos/catalogo.html', {'cursos': cursos})
+    categoria = request.GET.get('categoria')  # <-- 'categoria' singular
+    if categoria:
+        cursos = Curso.objects.filter(categoria=categoria)
+    else:
+        cursos = Curso.objects.all()
+
+    return render(request, 'cursos/catalogo.html', {
+        'cursos': cursos,
+        'categoria_activa': categoria,
+    })
 
 @login_required
 def agregar_al_carrito(request, curso_id):
@@ -40,8 +48,6 @@ def detalle_curso(request, curso_id):
 @login_required
 def procesar_compra(request):
     if request.method != 'POST':
-
-        print("✅ FORMULARIO ENVIADO, PROCESANDO COMPRA...")
         return redirect('ver_carrito')
 
     try:

@@ -2,11 +2,20 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Curso(models.Model):
+    categorias = [
+        ('Programacion', 'Programacion'), 
+        ('Desarrollo web', 'Desarrollo web'),
+        ('Desarrollo movil','Desarrollo movil'), 
+        ('Ciberseguridad', 'Ciberseguridad'),
+        ('Diseño UI/UX', 'Diseño UI/UX'),
+        ('Testing', 'Testing')
+    ]
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=8, decimal_places=2)
     imagen = models.ImageField(upload_to='cursos/', null=True, blank=True)
     disponible = models.BooleanField(default=True)
+    categoria = models.CharField(max_length=100, choices=categorias)
 
     def __str__(self):
         return self.nombre
