@@ -15,26 +15,18 @@
 <div class="bg-white border-b">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex flex-wrap gap-4">
-            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                <option>Todas las categorías</option>
-                <option>Matemáticas</option>
-                <option>Programación</option>
-                <option>Ciencias</option>
-                <option>Idiomas</option>
-            </select>
-            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                <option>Todos los niveles</option>
-                <option>Principiante</option>
-                <option>Intermedio</option>
-                <option>Avanzado</option>
-            </select>
-            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                <option>Ordenar por</option>
-                <option>Más populares</option>
-                <option>Precio: menor a mayor</option>
-                <option>Precio: mayor a menor</option>
-                <option>Más recientes</option>
-            </select>
+            <form method="get">
+                <select name="categoria" onchange="this.form.submit()" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">Todas las categorías</option>
+                    <option value="Programacion" {% if categoria_activa == "Programacion" %}selected{% endif %}>Programacion</option>
+                    <option value="Desarrollo web" {% if categoria_activa == "Desarrollo web" %}selected{% endif %}>Desarrollo web</option>
+                    <option value="Desarrollo movil" {% if categoria_activa == "Desarrollo movil" %}selected{% endif %}>Desarrollo móvil</option>
+                    <option value="Ciberseguridad" {% if categoria_activa == "Ciberseguridad" %}selected{% endif %}>Ciberseguridad</option>
+                    <option value="Diseño UI/UX" {% if categoria_activa == "Diseño UI/UX" %}selected{% endif %}>Diseño UI/UX</option>
+                    <option value="Testing" {% if categoria_activa == "Testing" %}selected{% endif %}>Testing</option>
+                </select>
+            </form>
+
         </div>
     </div>
 </div>
