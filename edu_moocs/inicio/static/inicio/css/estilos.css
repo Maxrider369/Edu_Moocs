@@ -1,0 +1,50 @@
+/* Animaciones para pre-registro */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeOut {
+    0% { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0.8); 
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Clases de animación */
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.fade-out {
+    animation: fadeOut 0.8s ease-out forwards;
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Estilos adicionales para el pre-registro */
+.preregister-success {
+    background-color: #10b981 !important;
+}
+
+.preregister-disabled {
+    opacity: 0.75;
+    cursor: not-allowed !important;
+}

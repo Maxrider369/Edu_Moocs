@@ -1,7 +1,6 @@
 {% extends 'inicio/encabezado.html' %}
 {% load static %}
 {% block title %}Catalogo{% endblock %}
-
 {% block contenido %}
 <!-- Header -->
 <div class="bg-white py-8">
@@ -26,7 +25,6 @@
                     <option value="Testing" {% if categoria_activa == "Testing" %}selected{% endif %}>Testing</option>
                 </select>
             </form>
-
         </div>
     </div>
 </div>
@@ -42,7 +40,7 @@
             </div>
             <div class="p-4">
                 <h3 class="text-lg font-semibold mb-2">{{ curso.nombre }}</h3>
-                
+                                
                 <div class="flex items-center mb-3">
                     <div class="flex text-yellow-400">
                         <!-- Stars here -->
@@ -63,44 +61,51 @@
             </div>
         </div>
         {% endfor %}
-        <!-- Tarjeta Próximamente mejorada -->
-<div class="relative bg-white rounded-lg shadow-md overflow-hidden flex flex-col justify-between hover:shadow-lg transition duration-300">
 
-    <!-- Cinta naranja -->
-    <div class="absolute top-0 right-0 z-10">
-        <div class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md select-none">
-            Próximamente
+        <!-- Tarjeta de Pre-registro -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer course-card"
+             onclick="openPreregisterModal()">
+            <!-- Cinta naranja -->
+            <div class="absolute z-10 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
+                Próximamente
+            </div>
+            
+            <!-- Imagen -->
+            <div class="h-40 overflow-hidden rounded-lg">
+                {% if imagen_url %}
+                    <img src="{{ imagen_url }}" alt="Imagen próximo curso" class="w-full h-full object-cover">
+                {% else %}
+                    <div class="h-full w-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                        <span class="text-white font-semibold">Próximamente</span>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Contenido -->
+            <div class="p-4">
+                <h3 class="text-lg font-semibold mb-2">Curso en preparación</h3>
+                
+                <div class="flex items-center mb-3">
+                    <div class="text-sm text-gray-600">
+                        Disponible pronto
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    
+                    <button class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition duration-300 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        Ver más
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Imagen o fondo -->
-    <div class="h-40 overflow-hidden rounded-t-lg">
-        {% if imagen_url %}
-            <img src="{{ imagen_url }}" alt="Imagen próximo curso" class="w-full h-full object-cover">
-        {% else %}
-            <div class="h-full w-full bg-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 font-semibold">Imagen no disponible</span>
-            </div>
-        {% endif %}
-    </div>
-
-    <!-- Contenido -->
-    <div class="p-5 flex flex-col flex-grow">
-        <h3 class="text-lg font-semibold mb-2 text-gray-800">Curso en preparación</h3>
-        <p class="text-gray-600 mb-6 text-sm flex-grow">Este curso estará disponible pronto. Puedes pre-registrarte para ser el primero en acceder.</p>
-        <button class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition duration-300 flex items-center justify-center gap-2 cursor-pointer select-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            Pre-registrar
-        </button>
-    </div>
 </div>
 
-    </div>
-</div>
-
-<!-- Modal -->
+<!-- Modal de cursos normales -->
 <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <!-- Modal Header -->
@@ -110,18 +115,18 @@
                 &times;
             </button>
         </div>
-        
+                
         <!-- Modal Content -->
         <div class="p-6">
             <div class="mb-6">
                 <img id="modalImage" src="/placeholder.svg" alt="" class="w-full h-64 object-cover rounded-lg">
             </div>
-            
+                        
             <div class="mb-6">
                 <h3 class="text-lg font-semibold mb-3 text-gray-900">Descripción del curso</h3>
                 <p id="modalDescription" class="text-gray-600 leading-relaxed"></p>
             </div>
-            
+                        
             <div class="flex items-center justify-between pt-4 border-t">
                 <div class="flex items-center">
                     <span class="text-3xl font-bold text-primary" id="modalPrice"></span>
@@ -142,41 +147,220 @@
     </div>
 </div>
 
+<!-- Modal de Pre-registro -->
+<div id="preregisterModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center p-6 border-b">
+            <h2 class="text-2xl font-bold text-gray-900">Curso en preparación</h2>
+            <button onclick="closePreregisterModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
+                &times;
+            </button>
+        </div>
+                
+        <!-- Modal Content -->
+        <div class="p-6">
+            <div class="mb-6">
+                {% if imagen_url %}
+                    <img src="{{ imagen_url }}" alt="Curso en preparación" class="w-full h-64 object-cover rounded-lg">
+                {% else %}
+                    <div class="w-full h-64 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-semibold text-2xl">Próximamente</span>
+                    </div>
+                {% endif %}
+            </div>
+                        
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3 text-gray-900">Descripción del curso</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Este curso estará disponible pronto. Será una experiencia de aprendizaje completa con contenido actualizado y ejercicios prácticos. 
+                    Pre-regístrate ahora para ser el primero en acceder cuando esté disponible.
+                </p>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div class="flex items-center gap-2 text-yellow-700 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="font-medium">Fecha estimada de lanzamiento: Marzo 2024</span>
+                </div>
+                <p class="text-yellow-600 text-sm">Te notificaremos por email cuando el curso esté disponible.</p>
+            </div>
+
+            <!-- Formulario de Pre-registro -->
+            <div class="border-t pt-6">
+                <h3 class="text-lg font-semibold mb-4 text-gray-900">Pre-registro</h3>
+                
+                <form id="preregisterForm" onsubmit="enviarPreregistro(event)">
+                    <!-- Campos automáticos (solo lectura) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                            <input type="text" value="{{ user.first_name }} {{ user.last_name }}" readonly 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" value="{{ user.email }}" readonly 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
+                        </div>
+                    </div>
+                    <!-- Campos editables -->
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono *</label>
+                            <input type="tel" id="telefono" name="telefono" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        
+                        <div>
+                            <label for="estado" class="block text-sm font-medium text-gray-700 mb-1">Estado o Distrito *</label>
+                            <input type="text" id="estado" name="estado" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        
+                        <div>
+                            <label for="ciudad" class="block text-sm font-medium text-gray-700 mb-1">Ciudad *</label>
+                            <input type="text" id="ciudad" name="ciudad" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between pt-4 border-t">
+                        <div class="flex items-center">
+                            <span class="text-3xl font-bold text-gray-500">Próximamente</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <button type="button" onclick="closePreregisterModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
+                                Cerrar
+                            </button>
+                            <button type="submit" id="submitPreregisterBtn" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                Pre-registrarme
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function openModal(cursoId, nombre, descripcion, imagen, precio) {
-    // Actualizar contenido del modal
     document.getElementById('modalTitle').textContent = nombre;
     document.getElementById('modalDescription').textContent = descripcion;
     document.getElementById('modalImage').src = imagen;
     document.getElementById('modalImage').alt = nombre;
     document.getElementById('modalPrice').textContent = '$' + precio;
-    
-    // Actualizar la acción del formulario
     document.getElementById('modalAddToCartForm').action = "{% url 'agregar_al_carrito' 0 %}".replace('0', cursoId);
-    
-    // Mostrar modal
     document.getElementById('courseModal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
     document.getElementById('courseModal').classList.add('hidden');
-    document.body.style.overflow = 'auto'; // Restaurar scroll del body
+    document.body.style.overflow = 'auto';
 }
 
-// Cerrar modal al hacer clic fuera de él
+function openPreregisterModal() {
+    document.getElementById('preregisterModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePreregisterModal() {
+    document.getElementById('preregisterModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    
+    // Limpiar formulario
+    document.getElementById('preregisterForm').reset();
+    
+    // Restaurar botón
+    const btn = document.getElementById('submitPreregisterBtn');
+    btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        Pre-registrarme
+    `;
+    btn.disabled = false;
+    btn.classList.remove('bg-green-500');
+    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+}
+
+function enviarPreregistro(event) {
+    event.preventDefault();
+    
+    const telefono = document.getElementById('telefono').value;
+    const estado = document.getElementById('estado').value;
+    const ciudad = document.getElementById('ciudad').value;
+    
+    const btn = document.getElementById('submitPreregisterBtn');
+    
+    // Estado de carga
+    btn.innerHTML = `
+        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Enviando...
+    `;
+    btn.disabled = true;
+    btn.classList.remove('hover:bg-green-700');
+    
+    // Simular envío
+    setTimeout(() => {
+        // Estado de éxito
+        btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            ¡Pre-registro exitoso!
+        `;
+        btn.classList.remove('bg-green-600');
+        btn.classList.add('bg-green-500');
+        
+        // Cerrar modal después de 2 segundos
+        setTimeout(() => {
+            closePreregisterModal();
+        }, 2000);
+        
+        console.log('Datos enviados:', { telefono, estado, ciudad });
+    }, 2000);
+}
+
+// Event listeners
 document.getElementById('courseModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeModal();
-    }
+    if (e.target === this) closeModal();
 });
 
-// Cerrar modal con tecla Escape
+document.getElementById('preregisterModal').addEventListener('click', function(e) {
+    if (e.target === this) closePreregisterModal();
+});
+
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeModal();
+        closePreregisterModal();
     }
 });
+
+// CSS para animación
+const style = document.createElement('style');
+style.textContent = `
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+`;
+document.head.appendChild(style);
 </script>
 
 {% endblock %}
