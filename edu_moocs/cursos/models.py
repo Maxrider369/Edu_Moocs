@@ -56,3 +56,17 @@ class TotalGastado(models.Model):
     def __str__(self):
         return f"{self.usuario.username} ha gastado ${self.total}"
 
+class Modulo(models.Model):
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='modulo')
+    titulo = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.curso.nombre} - {self.titulo}"
+
+class VideoModulo(models.Model):
+    modulo = models.ForeignKey(Modulo, on_delete=models.CASCADE, related_name='video')
+    titulo = models.CharField(max_length=100)
+    video_url = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f"{self.modulo.titulo} - {self.titulo}"

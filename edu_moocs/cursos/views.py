@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado
+from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.utils import timezone
@@ -14,6 +14,22 @@ def lista_cursos(request):
     return render(request, 'cursos/catalogo.html', {
         'cursos': cursos,
         'categoria_activa': categoria,
+    })
+
+@login_required
+def detalle_curso(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+    modulos = curso.modulo.all()
+    
+    video_id = request.GET.get('video')
+    video_seleccionado = None
+    if video_id:
+        video_seleccionado = VideoModulo.objects.filter(id=video_id, modulo__curso=curso).first()
+
+    return render(request, 'cursos/detalle-curso.html', {
+        'curso': curso,
+        'modulos': modulos,
+        'video_seleccionado': video_seleccionado
     })
 
 @login_required
@@ -41,9 +57,6 @@ def eliminar_del_carrito(request, curso_id):
     CursoEnCarrito.objects.filter(carrito=carrito, curso_id=curso_id).delete()
     return redirect('ver_carrito')
 
-def detalle_curso(request, curso_id):
-    curso = get_object_or_404(Curso, id=curso_id)
-    return render(request, 'cursos/deta-curso.html', {'curso': curso})
 
 @login_required
 def procesar_compra(request):
