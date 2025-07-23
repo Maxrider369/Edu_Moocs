@@ -31,6 +31,7 @@ urlpatterns = [
     path('registro/', usuarios_views.registro_basico, name='registro'),
     path('mis-cursos/', cursos_views.mis_cursos, name='mis_cursos'),
     path('comprar/', cursos_views.procesar_compra, name='procesar_compra'),
+    path('preregistro/', cursos_views.preregistro, name='preregistro'),
     path('detalle-curso/<int:curso_id>/', cursos_views.detalle_curso, name='detalle-curso'),
     path('login/', usuarios_views.login_basico, name='login'),
     path('logout/', usuarios_views.logout_basico, name='logout'),

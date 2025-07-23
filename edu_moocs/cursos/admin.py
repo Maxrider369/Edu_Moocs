@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo
+from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo, CursoPreregistro
 
 # Personalización del admin de Curso
 @admin.register(Curso)
@@ -54,3 +54,17 @@ class ModuloAdmin(admin.ModelAdmin):
 @admin.register(VideoModulo)
 class VideoModuloAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'modulo','video_url')
+
+@admin.register(CursoPreregistro)
+class CursoPreregistroAdmin(admin.ModelAdmin):
+    list_display = ('get_nombre_usuario', 'get_email_usuario', 'curso', 'telefono', 'ciudad', 'estado', 'fecha_preregistro')
+    list_filter = ('fecha_preregistro', 'ciudad', 'estado')
+    search_fields = ('usuario__username', 'usuario__first_name', 'usuario__email', 'curso__nombre', 'telefono', 'ciudad', 'estado')
+
+    def get_nombre_usuario(self, obj):
+        return obj.usuario.get_full_name() or obj.usuario.username
+    get_nombre_usuario.short_description = 'Nombre Usuario'
+
+    def get_email_usuario(self, obj):
+        return obj.usuario.email
+    get_email_usuario.short_description = 'Correo Usuario'

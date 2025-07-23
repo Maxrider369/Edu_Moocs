@@ -1,19 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo
+from django.urls import reverse
+from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo, CursoPreregistro
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.utils import timezone
+from cursos.forms import CursoPreregistroForm
+from django.contrib import messages
+
 
 def lista_cursos(request):
     categoria = request.GET.get('categoria')  # <-- 'categoria' singular
     if categoria:
-        cursos = Curso.objects.filter(categoria=categoria)
+        cursos = Curso.objects.filter(categoria=categoria, disponible = True)
+        Cursos_disponible = Curso.objects.filter(categoria=categoria, disponible = False)
     else:
-        cursos = Curso.objects.all()
-
+        cursos = Curso.objects.filter(disponible = True)
+        Cursos_disponible = Curso.objects.filter(disponible = False)
+    
     return render(request, 'cursos/catalogo.html', {
         'cursos': cursos,
         'categoria_activa': categoria,
+        'cursos_disponible': Cursos_disponible,
+        'usuario': request.user,
     })
 
 @login_required
@@ -23,14 +31,39 @@ def detalle_curso(request, curso_id):
     
     video_id = request.GET.get('video')
     video_seleccionado = None
-    if video_id:
-        video_seleccionado = VideoModulo.objects.filter(id=video_id, modulo__curso=curso).first()
+    video_anterior = None
+    video_siguiente = None
 
+    videos = list(VideoModulo.objects.filter(modulo__curso=curso).order_by('id'))
+
+    
+    if video_id:
+        try:
+            video_id_int = int(video_id.strip())
+
+            for idx, video in enumerate(videos):
+                if video.id == video_id_int:
+                    video_seleccionado = video
+                    if idx > 0:
+                        video_anterior = videos[idx - 1]
+                    if idx < len(videos) - 1:
+                        video_siguiente = videos[idx + 1]
+                    break  # Salimos del bucle al encontrar el video
+
+        except (ValueError, TypeError):
+            pass  #
+        except (ValueError, TypeError):
+            video_seleccionado = None
+            video_anterior = None
+            video_siguiente = None
     return render(request, 'cursos/detalle-curso.html', {
         'curso': curso,
         'modulos': modulos,
-        'video_seleccionado': video_seleccionado
+        'video_seleccionado': video_seleccionado,
+        'video_anterior': video_anterior,
+        'video_siguiente': video_siguiente,
     })
+
 
 @login_required
 def agregar_al_carrito(request, curso_id):
@@ -101,3 +134,34 @@ def mis_cursos(request):
         'total_gastado': total_gastado
     })
 
+
+
+def preregistro(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        # obtiene datos...
+        curso_id = request.POST.get('curso_id')
+        # ...
+
+        curso = get_object_or_404(Curso, id=curso_id)
+
+        if CursoPreregistro.objects.filter(usuario=request.user, curso=curso).exists():
+            messages.error(request, "Ya estás preregistrado en este curso.")
+        else:
+            CursoPreregistro.objects.create(
+                usuario=request.user,
+                curso=curso,
+                telefono=request.POST.get('telefono'),
+                ciudad=request.POST.get('ciudad'),
+                estado=request.POST.get('estado'),
+            )
+            messages.success(request, "¡Preregistro exitoso!")
+
+        return redirect('lista_cursos')  # redirige para limpiar POST
+
+    # Aquí GET solo muestra la página sin mensajes directos
+    return render(request, 'cursos/catalogo.html', {
+        # cualquier contexto necesario
+    })
