@@ -70,3 +70,14 @@ class VideoModulo(models.Model):
 
     def __str__(self):
         return f"{self.modulo.titulo} - {self.titulo}"
+    
+class CursoPreregistro(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cursos_preregistrados')
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    telefono = models.IntegerField()
+    ciudad = models.CharField(max_length=20)
+    estado = models.CharField(max_length=20)
+    fecha_preregistro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.username} con correo {self.usuario.email} se registro {self.curso.nombre}"
