@@ -1,8 +1,57 @@
 {% extends 'inicio/encabezado.html' %}
 {% load static %}
+
 {% block title %}Mis Cursos{% endblock %}
 
 {% block contenido %}
+<style>
+/* Estilos para progreso en mis-cursos - integrados */
+.course-progress-fill {
+  transition: width 0.8s ease-out;
+}
+
+/* Efecto hover para tarjetas */
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Badges de estado */
+.progress-badge {
+  animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animación de entrada para tarjetas */
+.course-card {
+  transition: all 0.6s ease;
+}
+
+/* Efectos de borde para diferentes estados */
+.course-completed {
+  border: 2px solid #10b981;
+}
+
+.course-in-progress {
+  border: 2px solid #3b82f6;
+}
+
+.course-not-started {
+  border: 2px solid #e5e7eb;
+}
+</style>
+
 <!-- Header -->
 <div class="bg-white py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,7 +67,7 @@
         {% for curso_comprado in cursos %}
         {% with curso=curso_comprado.curso %}
         <!-- Tarjeta de curso -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="course-card bg-white rounded-lg shadow-md overflow-hidden relative" data-course-card="{{ curso.id }}" data-user="{{ request.user.username }}">
             <div class="h-40 bg-gradient-to-r from-blue-400 to-blue-600">
                 {% if curso.imagen %}
                 <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover">
@@ -32,14 +81,14 @@
                 <div class="mb-4">
                     <div class="flex justify-between text-sm mb-1">
                         <span>Progreso</span>
-                        <span>75%</span>
+                        <span class="course-progress-percentage">75%</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                        <div class="bg-primary h-2 rounded-full course-progress-fill" style="width: 75%"></div>
                     </div>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-500">12/16 lecciones</span>
+                    <span class="text-sm text-gray-500 course-progress-details">12/16 lecciones</span>
                     <a href="{% url 'detalle-curso' curso.id %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
                         Continuar
                     </a>
@@ -50,6 +99,7 @@
         {% endfor %}
     </div>
 </div>
+
 <!-- SECCIÓN 2: CURSOS PRE-INSCRITOS -->
 <div class="bg-white py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,9 +107,7 @@
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Cursos Pre-inscritos</h2>
             <p class="text-gray-600">Cursos en los que te has pre-registrado</p>
         </div>
-
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
             <!-- Curso 1: Disponible -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="h-40 overflow-hidden rounded-t-lg">
@@ -83,7 +131,6 @@
                     </button>
                 </div>
             </div>
-
             <!-- Curso 2: En desarrollo -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="h-40 overflow-hidden rounded-t-lg">
@@ -107,7 +154,6 @@
                     </button>
                 </div>
             </div>
-
             <!-- Curso 3: Preparando -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="h-40 overflow-hidden rounded-t-lg">
@@ -131,14 +177,100 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para obtener progreso de curso
+    function getCourseProgress(userId, courseId) {
+        const storageKey = `course_progress_${userId}_${courseId}`;
+        const saved = localStorage.getItem(storageKey);
+        return saved ? JSON.parse(saved) : {
+            completedVideos: [],
+            currentVideo: null,
+            totalVideos: 0,
+            completionPercentage: 0
+        };
+    }
+
+    // Actualizar progreso en tarjetas de cursos
+    const courseCards = document.querySelectorAll('[data-course-card]');
+    const currentUser = '{{ request.user.username }}';
+    
+    courseCards.forEach((card, index) => {
+        const courseId = card.dataset.courseCard;
+        const progress = getCourseProgress(currentUser, courseId);
+        
+        // Actualizar elementos de progreso
+        const progressPercentage = card.querySelector('.course-progress-percentage');
+        const progressFill = card.querySelector('.course-progress-fill');
+        const progressDetails = card.querySelector('.course-progress-details');
+        
+        if (progressPercentage) {
+            progressPercentage.textContent = `${progress.completionPercentage}%`;
+        }
+        
+        if (progressFill) {
+            // Animación retardada para cada tarjeta
+            setTimeout(() => {
+                progressFill.style.width = `${progress.completionPercentage}%`;
+            }, index * 200);
+        }
+        
+        if (progressDetails) {
+            progressDetails.textContent = `${progress.completedVideos.length}/${progress.totalVideos} lecciones`;
+        }
+        
+        // Añadir efectos visuales basados en el progreso
+        if (progress.completionPercentage === 100) {
+            // Curso completado
+            card.classList.add('course-completed');
+            
+            // Añadir badge de completado
+            const badge = document.createElement('div');
+            badge.className = 'progress-badge absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold';
+            badge.innerHTML = '✓ Completado';
+            card.appendChild(badge);
+            
+        } else if (progress.completionPercentage > 0) {
+            // Curso en progreso
+            card.classList.add('course-in-progress');
+            
+            // Añadir badge de en progreso
+            const badge = document.createElement('div');
+            badge.className = 'progress-badge absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-semibold';
+            badge.innerHTML = '📚 En progreso';
+            card.appendChild(badge);
+            
+        } else {
+            // Curso sin iniciar
+            card.classList.add('course-not-started');
+            
+            // Añadir badge de no iniciado
+            const badge = document.createElement('div');
+            badge.className = 'progress-badge absolute top-2 right-2 bg-gray-400 text-white text-xs px-2 py-1 rounded-full font-semibold';
+            badge.innerHTML = '⏳ No iniciado';
+            card.appendChild(badge);
+        }
+        
+        // Animación de entrada para cada tarjeta
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+
 {% else %}
 <div class="max-w-7xl mx-auto px-4 py-8 text-gray-600">
     No tienes cursos aún.
 </div>
 {% endif %}
-{% endblock %}
 
+{% endblock %}
