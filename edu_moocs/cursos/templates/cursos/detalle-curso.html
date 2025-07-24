@@ -1,10 +1,98 @@
 {% extends 'inicio/encabezado.html' %}
 {% load static %}
+
 {% block title %}Detalle curso{% endblock %}
 
 {% block contenido %}
+<style>
+/* Estilos para los estados de progreso - integrados */
+.video-completed {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-left: 4px solid #10b981;
+}
+
+.video-current {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+}
+
+.video-locked {
+  opacity: 0.6;
+}
+
+.video-locked a {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* Animación suave para la barra de progreso */
+.progress-bar-fill {
+  transition: width 0.5s ease-in-out;
+}
+
+/* Notificaciones */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.notification {
+  background: #10b981;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  margin-bottom: 0.5rem;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 300px;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification.error {
+  background: #ef4444;
+}
+
+/* Animación para iconos completados */
+.video-completed .video-icon {
+  animation: completedBounce 0.6s ease-in-out;
+}
+
+@keyframes completedBounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+/* Efecto hover para videos desbloqueados */
+.video-item:not(.video-locked):hover {
+  transform: translateX(4px);
+  transition: transform 0.2s ease;
+}
+</style>
+
     <!-- Course Header -->
-    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-12">
+    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-12" data-course-id="{{ curso.id }}" data-user="{{ request.user.username }}">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-2 gap-8 items-center">
                 <div>
@@ -27,11 +115,11 @@
                 <div class="text-center">
                     <div class="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
                         <p class="text-sm opacity-90 mb-2">Progreso del curso</p>
-                        <div class="text-4xl font-bold mb-4">75%</div>
+                        <div class="text-4xl font-bold mb-4 progress-percentage">75%</div>
                         <div class="w-full bg-white/20 rounded-full h-3 mb-4">
-                            <div class="bg-white h-3 rounded-full" style="width: 75%"></div>
+                            <div class="bg-white h-3 rounded-full progress-bar-fill" style="width: 75%"></div>
                         </div>
-                        <p class="text-sm opacity-90">12 de 16 lecciones completadas</p>
+                        <p class="text-sm opacity-90 progress-details">12 de 16 lecciones completadas</p>
                     </div>
                 </div>
             </div>
@@ -55,26 +143,24 @@
                                 <p class="text-gray-600 text-sm">4 lecciones • 2h 30min</p>
                             </div>
                             {% for video in modulo.video.all %}
-                            
-                            <div class="p-4 space-y-3">
+                            <div class="p-4 space-y-3 video-item" data-video-id="{{ video.id }}" data-video-index="{{ forloop.counter0 }}">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center video-icon">
                                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                             </svg>
                                         </div>
-                                            <!-- Enlace que selecciona el video -->
-                                            <a href="{% url 'detalle_curso' curso.id %}?video={{ video.id }}" class="text-blue-600 hover:underline">
-                                                {{ video.titulo }}
-                                            </a>
-                                    </div>
+                                        <!-- Enlace que selecciona el video -->
+                                        <a href="{% url 'detalle_curso' curso.id %}?video={{ video.id }}" class="text-blue-600 hover:underline">
+                                            {{ video.titulo }}
+                                        </a>
                                     </div>
                                 </div>
+                            </div>
                             {% endfor %}
                         </div>
                         {% endfor %}
-                        
                     </div>
                 </div>
 
@@ -83,34 +169,39 @@
                     <h3 class="text-xl font-semibold mb-4">Lección Actual: {{ video_seleccionado.titulo }}</h3>
                     
                     <div class="aspect-video bg-gray-900 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
-                    <iframe 
-                        width="100%" 
-                        height="100%" 
-                        src="{{ video_seleccionado.video_url }}" 
-                        title="Video de {{ video_seleccionado.titulo }}" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src="{{ video_seleccionado.video_url }}"
+                        title="Video de {{ video_seleccionado.titulo }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                     </iframe>
                     </div>
-
+                    
+                    <!-- Botón para marcar como completado -->
+                    <div class="mb-4 text-center">
+                        <button class="complete-lesson-btn bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-300">
+                            ✓ Marcar como completado
+                        </button>
+                    </div>
                     
                     <div class="flex justify-between items-center">
                     {% if video_anterior %}
-                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition duration-300">
+                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition duration-300 prev-lesson-btn">
                     <a href="{% url 'detalle_curso' curso.id %}?video={{ video_anterior.id }}">← Lección Anterior
                     </a>
                     {% endif %}
                     </button>
                     {% if video_siguiente %}
-                    <button class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
+                    <button class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300 next-lesson-btn">
                         <a href="{% url 'detalle_curso' curso.id %}?video={{ video_siguiente.id }}"> Siguiente Lección →</a>
                     </button>
                     {% endif %}
                     </div>
                 </div>
                 {% endif %}
-
             </div>
 
             <!-- Sidebar -->
@@ -169,6 +260,365 @@
             </div>
         </div>
     </div>
-</div>
-</div>
+
+<!-- Contenedor de notificaciones -->
+<div class="notification-container" id="notificationContainer"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ===== SISTEMA DE NOTIFICACIONES =====
+    class ProgressNotifications {
+        constructor() {
+            this.container = document.getElementById('notificationContainer');
+        }
+
+        show(message, type = 'success', duration = 3000) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+            
+            const icon = type === 'success' ? '✓' : type === 'error' ? '⚠' : 'ℹ';
+            notification.innerHTML = `
+                <span style="font-size: 1.2em;">${icon}</span>
+                <span>${message}</span>
+            `;
+
+            this.container.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, duration);
+        }
+    }
+
+    // ===== SISTEMA DE PROGRESO DEL CURSO =====
+    class CourseProgressManager {
+        constructor() {
+            this.currentUser = this.getCurrentUser();
+            this.currentCourse = this.getCurrentCourse();
+            this.storageKey = `course_progress_${this.currentUser}_${this.currentCourse}`;
+            this.notifications = new ProgressNotifications();
+            this.init();
+        }
+
+        getCurrentUser() {
+            const userElement = document.querySelector('[data-user]');
+            return userElement ? userElement.dataset.user : 'anonymous';
+        }
+
+        getCurrentCourse() {
+            const courseElement = document.querySelector('[data-course-id]');
+            return courseElement ? courseElement.dataset.courseId : null;
+        }
+
+        init() {
+            this.loadProgress();
+            this.setupEventListeners();
+            this.updateUI();
+            this.setInitialVideo();
+        }
+
+        loadProgress() {
+            const saved = localStorage.getItem(this.storageKey);
+            this.progress = saved ? JSON.parse(saved) : {
+                completedVideos: [],
+                currentVideo: null,
+                totalVideos: this.getTotalVideos(),
+                completionPercentage: 0
+            };
+            this.calculateProgress();
+        }
+
+        saveProgress() {
+            localStorage.setItem(this.storageKey, JSON.stringify(this.progress));
+        }
+
+        getTotalVideos() {
+            return document.querySelectorAll('[data-video-id]').length;
+        }
+
+        setInitialVideo() {
+            if (!this.progress.currentVideo) {
+                const firstVideo = document.querySelector('[data-video-id]');
+                if (firstVideo) {
+                    this.progress.currentVideo = firstVideo.dataset.videoId;
+                    this.saveProgress();
+                }
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoParam = urlParams.get('video');
+            if (videoParam) {
+                this.progress.currentVideo = videoParam;
+                this.saveProgress();
+            }
+        }
+
+        markVideoAsCompleted(videoId) {
+            if (!this.progress.completedVideos.includes(videoId)) {
+                this.progress.completedVideos.push(videoId);
+                this.calculateProgress();
+                this.saveProgress();
+                this.updateUI();
+                
+                this.notifications.show('¡Lección completada! 🎉');
+                
+                if (this.progress.completionPercentage === 100) {
+                    setTimeout(() => {
+                        this.notifications.show('¡Felicidades! Has completado el curso 🏆', 'success', 5000);
+                    }, 1000);
+                }
+
+                const nextVideoId = this.getNextVideoId(videoId);
+                if (nextVideoId) {
+                    setTimeout(() => {
+                        this.notifications.show('Nueva lección desbloqueada 🔓');
+                    }, 500);
+                }
+            }
+        }
+
+        setCurrentVideo(videoId) {
+            this.progress.currentVideo = videoId;
+            this.saveProgress();
+            this.updateUI();
+        }
+
+        calculateProgress() {
+            const completed = this.progress.completedVideos.length;
+            const total = this.progress.totalVideos;
+            this.progress.completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+        }
+
+        isVideoUnlocked(videoId) {
+            const videoElement = document.querySelector(`[data-video-id="${videoId}"]`);
+            const videoIndex = parseInt(videoElement?.dataset.videoIndex || 0);
+
+            if (videoIndex === 0) return true;
+
+            const previousVideoId = this.getPreviousVideoId(videoId);
+            return previousVideoId ? this.progress.completedVideos.includes(previousVideoId) : false;
+        }
+
+        getPreviousVideoId(currentVideoId) {
+            const videoElements = document.querySelectorAll('[data-video-id]');
+            const videoArray = Array.from(videoElements);
+            const currentIndex = videoArray.findIndex(el => el.dataset.videoId === currentVideoId);
+
+            if (currentIndex > 0) {
+                return videoArray[currentIndex - 1].dataset.videoId;
+            }
+            return null;
+        }
+
+        getNextVideoId(currentVideoId) {
+            const videoElements = document.querySelectorAll('[data-video-id]');
+            const videoArray = Array.from(videoElements);
+            const currentIndex = videoArray.findIndex(el => el.dataset.videoId === currentVideoId);
+
+            if (currentIndex < videoArray.length - 1) {
+                return videoArray[currentIndex + 1].dataset.videoId;
+            }
+            return null;
+        }
+
+        updateUI() {
+            this.updateProgressBar();
+            this.updateVideoStates();
+            this.updateNavigationButtons();
+        }
+
+        updateProgressBar() {
+            const progressBar = document.querySelector('.progress-bar-fill');
+            const progressText = document.querySelector('.progress-percentage');
+            const progressDetails = document.querySelector('.progress-details');
+
+            if (progressBar) {
+                progressBar.style.width = `${this.progress.completionPercentage}%`;
+            }
+
+            if (progressText) {
+                progressText.textContent = `${this.progress.completionPercentage}%`;
+            }
+
+            if (progressDetails) {
+                progressDetails.textContent = `${this.progress.completedVideos.length} de ${this.progress.totalVideos} lecciones completadas`;
+            }
+        }
+
+        updateVideoStates() {
+            const videoElements = document.querySelectorAll('[data-video-id]');
+
+            videoElements.forEach(element => {
+                const videoId = element.dataset.videoId;
+                const isCompleted = this.progress.completedVideos.includes(videoId);
+                const isUnlocked = this.isVideoUnlocked(videoId);
+                const isCurrent = this.progress.currentVideo === videoId;
+
+                element.classList.remove('video-completed', 'video-current', 'video-locked');
+
+                if (isCompleted) {
+                    element.classList.add('video-completed');
+                } else if (isCurrent && isUnlocked) {
+                    element.classList.add('video-current');
+                } else if (!isUnlocked) {
+                    element.classList.add('video-locked');
+                }
+
+                this.updateVideoIcon(element, isCompleted, isUnlocked, isCurrent);
+
+                const link = element.querySelector('a');
+                if (link) {
+                    if (isUnlocked) {
+                        link.classList.remove('pointer-events-none', 'opacity-50');
+                    } else {
+                        link.classList.add('pointer-events-none', 'opacity-50');
+                    }
+                }
+            });
+        }
+
+        updateVideoIcon(element, isCompleted, isUnlocked, isCurrent) {
+            const iconContainer = element.querySelector('.video-icon');
+            if (!iconContainer) return;
+
+            let iconHTML = '';
+
+            if (isCompleted) {
+                iconHTML = `
+                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                `;
+            } else if (isCurrent && isUnlocked) {
+                iconHTML = `
+                    <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                `;
+            } else if (isUnlocked) {
+                iconHTML = `
+                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
+                `;
+            } else {
+                iconHTML = `
+                    <div class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                `;
+            }
+
+            iconContainer.innerHTML = iconHTML;
+        }
+
+        updateNavigationButtons() {
+            const nextButton = document.querySelector('.next-lesson-btn');
+            const prevButton = document.querySelector('.prev-lesson-btn');
+
+            if (nextButton) {
+                const currentVideoId = this.progress.currentVideo;
+                const nextVideoId = this.getNextVideoId(currentVideoId);
+
+                if (nextVideoId && this.isVideoUnlocked(nextVideoId)) {
+                    nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    nextButton.style.pointerEvents = 'auto';
+                } else {
+                    nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+                    nextButton.style.pointerEvents = 'none';
+                }
+            }
+        }
+
+        setupEventListeners() {
+            document.addEventListener('click', (e) => {
+                const videoLink = e.target.closest('[data-video-id] a');
+                if (videoLink) {
+                    const videoElement = videoLink.closest('[data-video-id]');
+                    const videoId = videoElement.dataset.videoId;
+
+                    if (this.isVideoUnlocked(videoId)) {
+                        this.setCurrentVideo(videoId);
+                    } else {
+                        e.preventDefault();
+                        this.notifications.show('Debes completar la lección anterior primero', 'error');
+                    }
+                }
+            });
+
+            const completeButton = document.querySelector('.complete-lesson-btn');
+            if (completeButton) {
+                completeButton.addEventListener('click', () => {
+                    if (this.progress.currentVideo) {
+                        this.markVideoAsCompleted(this.progress.currentVideo);
+
+                        const nextVideoId = this.getNextVideoId(this.progress.currentVideo);
+                        if (nextVideoId) {
+                            this.setCurrentVideo(nextVideoId);
+                        }
+                    }
+                });
+            }
+
+            const nextButton = document.querySelector('.next-lesson-btn');
+            const prevButton = document.querySelector('.prev-lesson-btn');
+
+            if (nextButton) {
+                nextButton.addEventListener('click', (e) => {
+                    const nextVideoId = this.getNextVideoId(this.progress.currentVideo);
+                    if (nextVideoId && this.isVideoUnlocked(nextVideoId)) {
+                        this.setCurrentVideo(nextVideoId);
+                    } else {
+                        e.preventDefault();
+                        this.notifications.show('Debes completar esta lección primero', 'error');
+                    }
+                });
+            }
+
+            if (prevButton) {
+                prevButton.addEventListener('click', (e) => {
+                    const prevVideoId = this.getPreviousVideoId(this.progress.currentVideo);
+                    if (prevVideoId) {
+                        this.setCurrentVideo(prevVideoId);
+                    }
+                });
+            }
+        }
+
+        static getCourseProgress(userId, courseId) {
+            const storageKey = `course_progress_${userId}_${courseId}`;
+            const saved = localStorage.getItem(storageKey);
+            return saved ? JSON.parse(saved) : {
+                completedVideos: [],
+                currentVideo: null,
+                totalVideos: 0,
+                completionPercentage: 0
+            };
+        }
+    }
+
+    if (document.querySelector('[data-course-id]')) {
+        window.courseProgress = new CourseProgressManager();
+    }
+});
+</script>
+
 {% endblock %}
