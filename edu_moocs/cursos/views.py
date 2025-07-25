@@ -9,18 +9,28 @@ from django.contrib import messages
 
 
 def lista_cursos(request):
-    categoria = request.GET.get('categoria')  # <-- 'categoria' singular
-    if categoria:
-        cursos = Curso.objects.filter(categoria=categoria, disponible = True)
-        Cursos_disponible = Curso.objects.filter(categoria=categoria, disponible = False)
-    else:
-        cursos = Curso.objects.filter(disponible = True)
-        Cursos_disponible = Curso.objects.filter(disponible = False)
+    categoria = request.GET.get('categoria')
     
+    if categoria:
+        cursos = Curso.objects.filter(categoria=categoria, disponible=True)
+        cursos_disponible = Curso.objects.filter(categoria=categoria, disponible=False)
+    else:
+        cursos = Curso.objects.filter(disponible=True)
+        cursos_disponible = Curso.objects.filter(disponible=False)
+
+    # Obtener los pre-registros del usuario actual
+    cursos_preregistrado = CursoPreregistro.objects.filter(usuario=request.user)
+
+    # Crear un diccionario curso_id -> preregistro
+    prereg_map = {pr.curso_id: pr for pr in cursos_preregistrado}
+
+    # Adjuntar el preregistro a cada curso como un atributo extra
+    for curso in cursos_disponible:
+        curso.prereg = prereg_map.get(curso.id)
+
     return render(request, 'cursos/catalogo.html', {
         'cursos': cursos,
-        'categoria_activa': categoria,
-        'cursos_disponible': Cursos_disponible,
+        'cursos_disponible': cursos_disponible,
         'usuario': request.user,
     })
 
@@ -126,12 +136,14 @@ def procesar_compra(request):
 
 def mis_cursos(request):
     cursos_comprados = CursoComprado.objects.filter(usuario=request.user).select_related('curso')
+    cursos_preregistrado = CursoPreregistro.objects.filter(usuario=request.user).select_related('curso')
     total_obj = TotalGastado.objects.filter(usuario=request.user).first()
     total_gastado = total_obj.total if total_obj else 0
 
     return render(request, 'cursos/mis-cursos.html', {
         'cursos': cursos_comprados,
-        'total_gastado': total_gastado
+        'cursos_preregistrado': cursos_preregistrado,
+        'total_gastado': total_gastado,
     })
 
 
