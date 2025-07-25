@@ -3,11 +3,47 @@
 {% block title %}Catalogo{% endblock %}
 {% block contenido %}
 
+<!-- Sistema de notificaciones mejorado -->
 {% if messages %}
+<div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2">
     {% for message in messages %}
-       <script> alert("{{ message|escapejs }}");</script>
+    <div class="notification-toast bg-white border-l-4 {% if message.tags == 'success' %}border-green-500{% elif message.tags == 'error' %}border-red-500{% elif message.tags == 'warning' %}border-yellow-500{% else %}border-blue-500{% endif %} rounded-lg shadow-lg p-4 max-w-sm transform translate-x-full opacity-0 transition-all duration-300 ease-in-out">
+        <div class="flex items-start">
+            <div class="flex-shrink-0">
+                {% if message.tags == 'success' %}
+                <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                {% elif message.tags == 'error' %}
+                <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                {% elif message.tags == 'warning' %}
+                <svg class="h-5 w-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                {% else %}
+                <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                {% endif %}
+            </div>
+            <div class="ml-3 flex-1">
+                <p class="text-sm font-medium text-gray-900">{{ message|escapejs }}</p>
+            </div>
+            <div class="ml-4 flex-shrink-0">
+                <button onclick="closeNotification(this)" class="inline-flex text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
     {% endfor %}
+</div>
 {% endif %}
+
 <!-- Header -->
 <div class="bg-white py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,7 +51,6 @@
         <p class="text-gray-600 mt-2">Descubre todos nuestros cursos disponibles</p>
     </div>
 </div>
-
 
 <!-- Filters -->
 <div class="bg-white border-b">
@@ -36,80 +71,131 @@
     </div>
 </div>
 
-<!-- Course Grid -->
+<!-- Course Grid Container -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {% for curso in cursos %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer course-card"
-            onclick="openModal('{{ curso.id }}', '{{ curso.nombre|escapejs }}', '{{ curso.descripcion|escapejs }}', '{{ curso.imagen.url }}', '{{ curso.precio }}')">
-            <div class="h-40 overflow-hidden rounded-lg">
-                <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover">
-            </div>
-            <div class="p-4">
-                <h3 class="text-lg font-semibold mb-2">{{ curso.nombre }}</h3>
-                                
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <!-- Stars here -->
+    <!-- Cursos Activos -->
+    {% if cursos %}
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Cursos Disponibles</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for curso in cursos %}
+            <div class="course-card-active bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                onclick="openModal('{{ curso.id }}', '{{ curso.nombre|escapejs }}', '{{ curso.descripcion|escapejs }}', '{{ curso.imagen.url }}', '{{ curso.precio }}')">
+                <div class="relative">
+                    <div class="h-40 overflow-hidden">
+                        <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        Disponible
                     </div>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-xl font-bold text-primary">${{ curso.precio }}</span>
-                    <form action="{% url 'agregar_al_carrito' curso.id %}" method="POST" class="inline" onclick="event.stopPropagation();">
-                        {% csrf_token %}
-                        <button type="submit" class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition duration-300 flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m5-9v9m4-9v9m1-13h3" />
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-900 line-clamp-2">{{ curso.nombre }}</h3>
+                    <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                            <!-- Stars here -->
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
                             </svg>
-                            Agregar
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% for curso in cursos_disponible %}
-        <!-- Tarjeta de Pre-registro -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer course-card"
-            onclick="openPreregisterModal()">
-            <!-- Cinta naranja -->
-            <div class="absolute z-10 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
-                Próximamente
-            </div>
-            
-            <!-- Imagen -->
-            <div class="h-40 overflow-hidden rounded-lg">
-                
-                    <img src="{{ curso.imagen.url }}" alt="Imagen próximo curso" class="w-full h-full object-cover">
-           
-                    <div class="h-full w-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
-                        <span class="text-white font-semibold">Próximamente</span>
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-gray-500 ml-2">(4.0)</span>
                     </div>
-               
-            </div>
-            
-            <!-- Contenido -->
-            <div class="p-4">
-                <h3 class="text-lg font-semibold mb-2">{{ curso.nombre }}</h3>
-                
-                <div class="flex items-center mb-3">
-                    <div class="text-sm text-gray-600">
-                        Disponible pronto
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-bold text-primary">${{ curso.precio }}</span>
+                        <form action="{% url 'agregar_al_carrito' curso.id %}" method="POST" class="inline" onclick="event.stopPropagation();">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition duration-300 flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m5-9v9m4-9v9m1-13h3" />
+                                </svg>
+                                Agregar
+                            </button>
+                        </form>
                     </div>
                 </div>
-                
-                <div class="flex justify-between items-center">
-                    
-                    <button class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition duration-300 flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        Ver más
-                    </button>
-                </div>
             </div>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
+
+    <!-- Cursos Próximamente -->
+    {% if cursos_disponible %}
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Próximamente</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for curso in cursos_disponible %}
+            <div class="course-card-inactive bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1 relative"
+                onclick="openPreregisterModal('{{ curso.id }}', '{{ curso.nombre|escapejs }}', '{{ curso.descripcion|escapejs }}', '{{ curso.imagen.url }}')">
+                <div class="relative">
+                    <!-- Cinta naranja -->
+                    <div class="absolute top-0 right-0 z-10 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+                        Próximamente
+                    </div>
+                    
+                    <!-- Imagen con overlay -->
+                    <div class="h-40 overflow-hidden relative">
+                        {% if curso.imagen.url %}
+                            <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-400/70 to-pink-500/70 flex items-center justify-center">
+                                <span class="text-white font-semibold text-lg">Próximamente</span>
+                            </div>
+                        {% else %}
+                            <div class="h-full w-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                                <span class="text-white font-semibold">Próximamente</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-900 line-clamp-2">{{ curso.nombre }}</h3>
+                    <div class="flex items-center mb-3">
+                        <div class="text-sm text-gray-600 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Disponible pronto
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-gray-500">Precio por definir</span>
+                        <button class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition duration-300 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            Notificarme
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Mensaje cuando no hay cursos -->
+    {% if not cursos and not cursos_disponible %}
+    <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No hay cursos disponibles</h3>
+        <p class="mt-1 text-sm text-gray-500">No se encontraron cursos para la categoría seleccionada.</p>
+    </div>
+    {% endif %}
 </div>
 
 <!-- Modal de cursos normales -->
@@ -118,22 +204,22 @@
         <!-- Modal Header -->
         <div class="flex justify-between items-center p-6 border-b">
             <h2 id="modalTitle" class="text-2xl font-bold text-gray-900"></h2>
-            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold transition-colors">
                 &times;
             </button>
         </div>
-                
+        
         <!-- Modal Content -->
         <div class="p-6">
             <div class="mb-6">
-                <img id="modalImage" src="{{ curso.imagen.url }}" alt="" class="w-full h-64 object-cover rounded-lg">
+                <img id="modalImage" src="/placeholder.svg" alt="" class="w-full h-64 object-cover rounded-lg">
             </div>
-                        
+            
             <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3 text-gray-900">{{ curso.nombre }}</h3>
+                <h3 class="text-lg font-semibold mb-3 text-gray-900">Descripción del curso</h3>
                 <p id="modalDescription" class="text-gray-600 leading-relaxed"></p>
             </div>
-                        
+            
             <div class="flex items-center justify-between pt-4 border-t">
                 <div class="flex items-center">
                     <span class="text-3xl font-bold text-primary" id="modalPrice"></span>
@@ -159,28 +245,21 @@
     <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <!-- Modal Header -->
         <div class="flex justify-between items-center p-6 border-b">
-            <h2 class="text-2xl font-bold text-gray-900">Curso en preparación</h2>
-            <button onclick="closePreregisterModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
+            <h2 id="preregisterModalTitle" class="text-2xl font-bold text-gray-900">Curso en preparación</h2>
+            <button onclick="closePreregisterModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold transition-colors">
                 &times;
             </button>
         </div>
-                
+        
         <!-- Modal Content -->
         <div class="p-6">
             <div class="mb-6">
-                {% if curso.imagen.url %}
-                    <img src="{{ curso.imagen.url }}" alt="Curso en preparación" class="w-full h-64 object-cover rounded-lg">
-                {% else %}
-                    <div class="w-full h-64 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
-                        <span class="text-white font-semibold text-2xl">Próximamente</span>
-                    </div>
-                {% endif %}
+                <img id="preregisterModalImage" src="/placeholder.svg" alt="Curso en preparación" class="w-full h-64 object-cover rounded-lg">
             </div>
-                        
+            
             <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3 text-gray-900">{{ curso.nombre }}</h3>
-                <p class="text-gray-600 leading-relaxed">{{ curso.descripcion }}
-                </p>
+                <h3 class="text-lg font-semibold mb-3 text-gray-900" id="preregisterModalSubtitle">Nombre del curso</h3>
+                <p id="preregisterModalDescription" class="text-gray-600 leading-relaxed">Descripción del curso</p>
             </div>
 
             <!-- Información adicional -->
@@ -198,74 +277,402 @@
             <div class="border-t pt-6">
                 <h3 class="text-lg font-semibold mb-4 text-gray-900">Pre-registro</h3>
                 
-                <form id="preregisterForm" method="post" action="{% url 'preregistro' %}">
-                {% csrf_token %}
+                <form id="preregisterForm" method="post" action="{% url 'preregistro' %}" novalidate>
+                    {% csrf_token %}
+                    <!-- Campo oculto: curso_id -->
+                    <input type="hidden" name="curso_id" id="preregisterCursoId" value="">
 
-                <!-- Campo oculto: curso_id -->
-                <input type="hidden" name="curso_id" value="{{ curso.id }}">
+                    <!-- Campos automáticos (solo lectura) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                            <input type="text" value="{{ usuario.username }}" readonly
+                                 class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" value="{{ usuario.email }}" readonly
+                                 class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
+                        </div>
+                    </div>
 
-                <!-- Campos automáticos (solo lectura) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                        <input type="text" value="{{ usuario.username }}" readonly 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
+                    <!-- Campos editables con validación -->
+                    <div class="space-y-4 mb-6">
+                        <!-- Campo Teléfono -->
+                        <div>
+                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">
+                                Teléfono *
+                                <span class="text-xs text-gray-500">(7-15 dígitos)</span>
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="telefono" 
+                                name="telefono" 
+                                required
+                                pattern="[0-9]{7,15}"
+                                minlength="7"
+                                maxlength="15"
+                                title="Ingrese solo números del 0 al 9, entre 7 y 15 dígitos"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                                placeholder="Ej: 1234567890">
+                            <div id="telefono-error" class="hidden text-red-600 text-xs mt-1 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Solo números del 0 al 9, entre 7 y 15 dígitos</span>
+                            </div>
+                            <div id="telefono-success" class="hidden text-green-600 text-xs mt-1 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Teléfono válido</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Campo Estado -->
+                        <div>
+                            <label for="estado" class="block text-sm font-medium text-gray-700 mb-1">
+                                Estado o Distrito *
+                                <span class="text-xs text-gray-500">(sin espacios al inicio o final)</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="estado" 
+                                name="estado" 
+                                required
+                                pattern="^[^\s].*[^\s]$|^[^\s]$"
+                                minlength="2"
+                                maxlength="50"
+                                title="Ingrese el estado sin espacios al inicio o final"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                                placeholder="Ej: Lima">
+                            <div id="estado-error" class="hidden text-red-600 text-xs mt-1 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Estado requerido, sin espacios al inicio o final</span>
+                            </div>
+                            <div id="estado-success" class="hidden text-green-600 text-xs mt-1 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Estado válido</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Campo Ciudad -->
+                        <div>
+                            <label for="ciudad" class="block text-sm font-medium text-gray-700 mb-1">
+                                Ciudad *
+                                <span class="text-xs text-gray-500">(sin espacios al inicio o final)</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="ciudad" 
+                                name="ciudad" 
+                                required
+                                pattern="^[^\s].*[^\s]$|^[^\s]$"
+                                minlength="2"
+                                maxlength="50"
+                                title="Ingrese la ciudad sin espacios al inicio o final"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                                placeholder="Ej: Miraflores">
+                            <div id="ciudad-error" class="hidden text-red-600 text-xs mt-1 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Ciudad requerida, sin espacios al inicio o final</span>
+                            </div>
+                            <div id="ciudad-success" class="hidden text-green-600 text-xs mt-1 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Ciudad válida</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" value="{{ usuario.email }}" readonly 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
-                    </div>
-                </div>
 
-                <!-- Campos editables -->
-                <div class="space-y-4 mb-6">
-                    <div>
-                        <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono *</label>
-                        <input type="tel" id="telefono" name="telefono" required 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    <!-- Botones -->
+                    <div class="flex items-center justify-between pt-4 border-t">
+                        <div class="flex items-center">
+                            <span class="text-3xl font-bold text-gray-500">Próximamente</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <button type="button" onclick="closePreregisterModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
+                                Cerrar
+                            </button>
+                            <button type="submit" id="submitPreregisterBtn" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                Pre-registrarme
+                            </button>
+                        </div>
                     </div>
-                    
-                    <div>
-                        <label for="estado" class="block text-sm font-medium text-gray-700 mb-1">Estado o Distrito *</label>
-                        <input type="text" id="estado" name="estado" required 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                    </div>
-                    
-                    <div>
-                        <label for="ciudad" class="block text-sm font-medium text-gray-700 mb-1">Ciudad *</label>
-                        <input type="text" id="ciudad" name="ciudad" required 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                    </div>
-                </div>
-
-                <!-- Botones -->
-                <div class="flex items-center justify-between pt-4 border-t">
-                    <div class="flex items-center">
-                        <span class="text-3xl font-bold text-gray-500">Próximamente</span>
-                    </div>
-                    <div class="flex gap-3">
-                        <button type="button" onclick="closePreregisterModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
-                            Cerrar
-                        </button>
-                        <button type="submit" id="submitPreregisterBtn" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                            Pre-registrarme
-                        </button>
-                    </div>
-                </div>
-            </form>
-
+                </form>
             </div>
         </div>
-        
-    {% endfor %}
     </div>
 </div>
 
 <script>
+// Validación en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('preregisterForm');
+    const telefonoInput = document.getElementById('telefono');
+    const estadoInput = document.getElementById('estado');
+    const ciudadInput = document.getElementById('ciudad');
+    const submitBtn = document.getElementById('submitPreregisterBtn');
+
+    // Función para validar teléfono
+    function validateTelefono(value) {
+        const phoneRegex = /^[0-9]{7,15}$/;
+        return phoneRegex.test(value);
+    }
+
+    // Función para validar texto (sin espacios al inicio/final)
+    function validateText(value) {
+        const trimmed = value.trim();
+        return trimmed.length >= 2 && trimmed.length <= 50 && trimmed === value;
+    }
+
+    // Función para mostrar error
+    function showError(fieldId, show = true) {
+        const errorDiv = document.getElementById(fieldId + '-error');
+        const successDiv = document.getElementById(fieldId + '-success');
+        const input = document.getElementById(fieldId);
+        
+        if (show) {
+            errorDiv.classList.remove('hidden');
+            successDiv.classList.add('hidden');
+            input.classList.remove('border-gray-300', 'border-green-500');
+            input.classList.add('border-red-500');
+        } else {
+            errorDiv.classList.add('hidden');
+            successDiv.classList.remove('hidden');
+            input.classList.remove('border-gray-300', 'border-red-500');
+            input.classList.add('border-green-500');
+        }
+    }
+
+    // Función para limpiar validación
+    function clearValidation(fieldId) {
+        const errorDiv = document.getElementById(fieldId + '-error');
+        const successDiv = document.getElementById(fieldId + '-success');
+        const input = document.getElementById(fieldId);
+        
+        errorDiv.classList.add('hidden');
+        successDiv.classList.add('hidden');
+        input.classList.remove('border-red-500', 'border-green-500');
+        input.classList.add('border-gray-300');
+    }
+
+    // Función para verificar si el formulario es válido
+    function checkFormValidity() {
+        const telefonoValid = validateTelefono(telefonoInput.value);
+        const estadoValid = validateText(estadoInput.value);
+        const ciudadValid = validateText(ciudadInput.value);
+        
+        const isValid = telefonoValid && estadoValid && ciudadValid;
+        submitBtn.disabled = !isValid;
+        
+        return isValid;
+    }
+
+    // Solo permitir números en el campo teléfono
+    telefonoInput.addEventListener('input', function(e) {
+        // Remover cualquier carácter que no sea número
+        let value = e.target.value.replace(/[^0-9]/g, '');
+        
+        // Limitar a 15 dígitos
+        if (value.length > 15) {
+            value = value.substring(0, 15);
+        }
+        
+        e.target.value = value;
+        
+        // Validar
+        if (value.length === 0) {
+            clearValidation('telefono');
+        } else if (validateTelefono(value)) {
+            showError('telefono', false);
+        } else {
+            showError('telefono', true);
+        }
+        
+        checkFormValidity();
+    });
+
+    // Validar estado en tiempo real
+    estadoInput.addEventListener('input', function(e) {
+        const value = e.target.value;
+        
+        if (value.length === 0) {
+            clearValidation('estado');
+        } else if (validateText(value)) {
+            showError('estado', false);
+        } else {
+            showError('estado', true);
+        }
+        
+        checkFormValidity();
+    });
+
+    // Validar ciudad en tiempo real
+    ciudadInput.addEventListener('input', function(e) {
+        const value = e.target.value;
+        
+        if (value.length === 0) {
+            clearValidation('ciudad');
+        } else if (validateText(value)) {
+            showError('ciudad', false);
+        } else {
+            showError('ciudad', true);
+        }
+        
+        checkFormValidity();
+    });
+
+    // Auto-trim en blur para estado y ciudad
+    estadoInput.addEventListener('blur', function(e) {
+        const trimmed = e.target.value.trim();
+        if (trimmed !== e.target.value) {
+            e.target.value = trimmed;
+            // Re-validar después del trim
+            if (trimmed.length === 0) {
+                clearValidation('estado');
+            } else if (validateText(trimmed)) {
+                showError('estado', false);
+            } else {
+                showError('estado', true);
+            }
+            checkFormValidity();
+        }
+    });
+
+    ciudadInput.addEventListener('blur', function(e) {
+        const trimmed = e.target.value.trim();
+        if (trimmed !== e.target.value) {
+            e.target.value = trimmed;
+            // Re-validar después del trim
+            if (trimmed.length === 0) {
+                clearValidation('ciudad');
+            } else if (validateText(trimmed)) {
+                showError('ciudad', false);
+            } else {
+                showError('ciudad', true);
+            }
+            checkFormValidity();
+        }
+    });
+
+    // Manejo del envío del formulario
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validación final antes del envío
+        const telefonoValid = validateTelefono(telefonoInput.value);
+        const estadoValid = validateText(estadoInput.value);
+        const ciudadValid = validateText(ciudadInput.value);
+        
+        // Mostrar errores si los hay
+        if (!telefonoValid) showError('telefono', true);
+        if (!estadoValid) showError('estado', true);
+        if (!ciudadValid) showError('ciudad', true);
+        
+        // Solo enviar si todo es válido
+        if (telefonoValid && estadoValid && ciudadValid) {
+            const btn = document.getElementById('submitPreregisterBtn');
+            
+            // Estado de carga
+            btn.innerHTML = `
+                <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Enviando...
+            `;
+            btn.disabled = true;
+            btn.classList.remove('hover:bg-green-700');
+            
+            // Enviar formulario real
+            this.submit();
+        } else {
+            // Scroll al primer error
+            const firstError = form.querySelector('.border-red-500');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.focus();
+            }
+        }
+    });
+
+    // Inicializar estado del botón
+    checkFormValidity();
+});
+
+// Función mejorada para cerrar modal y limpiar validaciones
+function closePreregisterModal() {
+    document.getElementById('preregisterModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    
+    // Limpiar formulario
+    const form = document.getElementById('preregisterForm');
+    form.reset();
+    
+    // Limpiar validaciones visuales
+    ['telefono', 'estado', 'ciudad'].forEach(fieldId => {
+        const errorDiv = document.getElementById(fieldId + '-error');
+        const successDiv = document.getElementById(fieldId + '-success');
+        const input = document.getElementById(fieldId);
+        
+        if (errorDiv) errorDiv.classList.add('hidden');
+        if (successDiv) successDiv.classList.add('hidden');
+        if (input) {
+            input.classList.remove('border-red-500', 'border-green-500');
+            input.classList.add('border-gray-300');
+        }
+    });
+    
+    // Restaurar botón
+    const btn = document.getElementById('submitPreregisterBtn');
+    btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        Pre-registrarme
+    `;
+    btn.disabled = true; // Inicialmente deshabilitado hasta que se valide
+    btn.classList.remove('bg-green-500');
+    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+}
+
+// Sistema de notificaciones
+document.addEventListener('DOMContentLoaded', function() {
+    const notifications = document.querySelectorAll('.notification-toast');
+    
+    notifications.forEach((notification, index) => {
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full', 'opacity-0');
+            notification.classList.add('translate-x-0', 'opacity-100');
+        }, index * 200);
+        
+        // Auto-close después de 5 segundos
+        setTimeout(() => {
+            closeNotification(notification.querySelector('button'));
+        }, 5000 + (index * 200));
+    });
+});
+
+function closeNotification(button) {
+    const notification = button.closest('.notification-toast');
+    notification.classList.add('translate-x-full', 'opacity-0');
+    setTimeout(() => {
+        notification.remove();
+    }, 300);
+}
+
+// Funciones del modal de cursos
 function openModal(cursoId, nombre, descripcion, imagen, precio) {
     document.getElementById('modalTitle').textContent = nombre;
     document.getElementById('modalDescription').textContent = descripcion;
@@ -282,73 +689,24 @@ function closeModal() {
     document.body.style.overflow = 'auto';
 }
 
-function openPreregisterModal() {
+// Funciones del modal de pre-registro
+function openPreregisterModal(cursoId, nombre, descripcion, imagen) {
+    document.getElementById('preregisterModalTitle').textContent = 'Pre-registro: ' + nombre;
+    document.getElementById('preregisterModalSubtitle').textContent = nombre;
+    document.getElementById('preregisterModalDescription').textContent = descripcion;
+    document.getElementById('preregisterCursoId').value = cursoId;
+    
+    if (imagen) {
+        document.getElementById('preregisterModalImage').src = imagen;
+    } else {
+        document.getElementById('preregisterModalImage').src = '/placeholder.svg?height=256&width=512';
+    }
+    
     document.getElementById('preregisterModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
 
-function closePreregisterModal() {
-    document.getElementById('preregisterModal').classList.add('hidden');
-    document.body.style.overflow = 'auto';
-    
-    // Limpiar formulario
-    document.getElementById('preregisterForm').reset();
-    
-    // Restaurar botón
-    const btn = document.getElementById('submitPreregisterBtn');
-    btn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-        Pre-registrarme
-    `;
-    btn.disabled = false;
-    btn.classList.remove('bg-green-500');
-    btn.classList.add('bg-green-600', 'hover:bg-green-700');
-}
-
-function enviarPreregistro(event) {
-    event.preventDefault();
-    
-    const telefono = document.getElementById('telefono').value;
-    const estado = document.getElementById('estado').value;
-    const ciudad = document.getElementById('ciudad').value;
-    
-    const btn = document.getElementById('submitPreregisterBtn');
-    
-    // Estado de carga
-    btn.innerHTML = `
-        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Enviando...
-    `;
-    btn.disabled = true;
-    btn.classList.remove('hover:bg-green-700');
-    
-    // Simular envío
-    setTimeout(() => {
-        // Estado de éxito
-        btn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            ¡Pre-registro exitoso!
-        `;
-        btn.classList.remove('bg-green-600');
-        btn.classList.add('bg-green-500');
-        
-        // Cerrar modal después de 2 segundos
-        setTimeout(() => {
-            closePreregisterModal();
-        }, 2000);
-        
-        console.log('Datos enviados:', { telefono, estado, ciudad });
-    }, 2000);
-}
-
-// Event listeners
+// Event listeners para cerrar modales
 document.getElementById('courseModal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
 });
@@ -364,15 +722,31 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// CSS para animación
+// CSS para animaciones
 const style = document.createElement('style');
 style.textContent = `
 .animate-spin {
     animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.course-card-active:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.course-card-inactive:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 `;
 document.head.appendChild(style);
