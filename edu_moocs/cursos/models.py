@@ -16,6 +16,8 @@ class Curso(models.Model):
     imagen = models.ImageField(upload_to='cursos/', null=True, blank=True)
     disponible = models.BooleanField(default=True)
     categoria = models.CharField(max_length=100, choices=categorias)
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.nombre
