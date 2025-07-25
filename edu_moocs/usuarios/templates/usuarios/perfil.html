@@ -1,57 +1,77 @@
 {% extends 'inicio/encabezado.html' %}
 {% load static %}
+{% block title %}Perfil{% endblock %}
 
-{%  block title %}
-Perfil
-{%endblock%}
-
-    {% block contenido %}
-
+{% block contenido %}
 <br>
 <!-- Main Content -->
 <div class="lg:col-span-2">
     <div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
         <h2 class="text-2xl font-bold mb-6">Información Personal</h2>
-        <form class="space-y-6"  method="POST" action="{% url 'perfil' usuario.id %}">
+        <form class="space-y-6" method="POST" action="{% url 'perfil' usuario.id %}">
             {% csrf_token %}
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
-                    <input type="text" value="{{ usuario.first_name }}" name="first_name" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <input type="text" value="{{ usuario.first_name }}" name="first_name" 
+                           class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                    <input type="text" value="{{ usuario.username }}" name="username" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <input type="text" value="{{ usuario.username }}" readonly
+                           class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed">
+                    <small class="text-gray-500 mt-1 block">El nombre de usuario no se puede modificar</small>
                 </div>
             </div>
+            
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
-                <input type="email" value="{{ usuario.email }}" name="email" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                <input type="email" value="{{ usuario.email }}" name="email" 
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
             </div>
+            
+            <!-- Contraseña actual (solo lectura) -->
+           
+            <!-- Nueva contraseña -->
             <div class="relative">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
-                <input id="pass" type="password" name="password" value=""
-                    class="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary">
-                <!-- Botón para mostrar/ocultar contraseña -->
-            <button type="button"
-                    onclick="pass.type = pass.type === 'password' ? 'text' : 'password'"
-                    class="absolute right-3 inset-y-0 flex items-center text-gray-500 hover:text-primary px-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z" />
-                </svg>
-            </button>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nueva Contraseña (opcional)</label>
+                <input id="passwordField" type="password" name="password" value="" 
+                       placeholder="Deja vacío para mantener la contraseña actual"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary">
+
+                </button>
             </div>
+            
             <div>
-                <button button type="submit" onclick="pass.type=pass.type==='password'?'text':'password'"
-                    class="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300">
+                <button type="submit" 
+                        class="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                     Guardar Cambios
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('passwordField');
+    const toggleButton = document.getElementById('togglePassword');
+    const eyeClosed = document.getElementById('eyeClosed');
+    const eyeOpen = document.getElementById('eyeOpen');
+    
+    toggleButton.addEventListener('click', function() {
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeClosed.classList.add('hidden');
+            eyeOpen.classList.remove('hidden');
+        } else {
+            passwordField.type = 'password';
+            eyeClosed.classList.remove('hidden');
+            eyeOpen.classList.add('hidden');
+        }
+    });
+});
+</script>
+
 <br>
-{%endblock%}
+{% endblock %}
