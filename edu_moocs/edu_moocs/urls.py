@@ -21,11 +21,15 @@ from inicio import views
 from cursos import views as cursos_views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.auth import views as auth_views
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', auth_views.LoginView.as_view(template_name='admin/login.html'), name='login'),
     path('', views.principal, name="principal"),
+    path('principal/', views.principal, name="principal"),
     path('contacto/', views.contacto, name="contacto"),
     path('cursos/', cursos_views.lista_cursos, name='lista_cursos'),
     path('registro/', usuarios_views.registro_basico, name='registro'),
@@ -33,7 +37,7 @@ urlpatterns = [
     path('comprar/', cursos_views.procesar_compra, name='procesar_compra'),
     path('preregistro/', cursos_views.preregistro, name='preregistro'),
     path('detalle-curso/<int:curso_id>/', cursos_views.detalle_curso, name='detalle-curso'),
-    path('login/', usuarios_views.login_basico, name='login'),
+    path('login2/', usuarios_views.login_basico, name='login2'),
     path('logout/', usuarios_views.logout_basico, name='logout'),
     path('perfil/<int:id>/', usuarios_views.editar_usuario, name='perfil'),
     path('carrito/', cursos_views.ver_carrito, name='ver_carrito'),

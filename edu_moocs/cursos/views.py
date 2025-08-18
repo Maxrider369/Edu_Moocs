@@ -7,6 +7,7 @@ from django.utils import timezone
 from cursos.forms import CursoPreregistroForm
 from django.contrib import messages
 
+from django.contrib.auth.models import AnonymousUser
 
 def lista_cursos(request):
     categoria = request.GET.get('categoria')
@@ -18,13 +19,12 @@ def lista_cursos(request):
         cursos = Curso.objects.filter(disponible=True)
         cursos_disponible = Curso.objects.filter(disponible=False)
 
-    # Obtener los pre-registros del usuario actual
-    cursos_preregistrado = CursoPreregistro.objects.filter(usuario=request.user)
+    prereg_map = {}
 
-    # Crear un diccionario curso_id -> preregistro
-    prereg_map = {pr.curso_id: pr for pr in cursos_preregistrado}
+    if request.user.is_authenticated:
+        cursos_preregistrado = CursoPreregistro.objects.filter(usuario=request.user)
+        prereg_map = {pr.curso_id: pr for pr in cursos_preregistrado}
 
-    # Adjuntar el preregistro a cada curso como un atributo extra
     for curso in cursos_disponible:
         curso.prereg = prereg_map.get(curso.id)
 
@@ -32,9 +32,11 @@ def lista_cursos(request):
         'cursos': cursos,
         'cursos_disponible': cursos_disponible,
         'usuario': request.user,
+        'categoria_activa': categoria,  # <-- PASARLA AL TEMPLATE
     })
 
-@login_required
+
+@login_required(login_url='/login2/')
 def detalle_curso(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     modulos = curso.modulo.all()
@@ -75,33 +77,35 @@ def detalle_curso(request, curso_id):
     })
 
 
-@login_required
+@login_required(login_url='/login2/')
 def agregar_al_carrito(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
-
     carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
 
-    # Evita duplicados
-    if not CursoEnCarrito.objects.filter(carrito=carrito, curso=curso).exists():
+    if CursoEnCarrito.objects.filter(carrito=carrito, curso=curso).exists():
+        messages.warning(request, f"El curso '{curso.nombre}' ya está en tu carrito.")
+    else:
         CursoEnCarrito.objects.create(carrito=carrito, curso=curso)
+        messages.success(request, f"Curso '{curso.nombre}' agregado al carrito.")
 
-    return redirect('ver_carrito')
+    # Redirige de vuelta al catálogo
+    return redirect('lista_cursos')
 
-@login_required
+@login_required(login_url='/login2/')
 def ver_carrito(request):
     carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
     cursos = carrito.cursos.all()
     total = sum([c.curso.precio for c in cursos])
     return render(request, 'cursos/carrito.html', {'cursos': cursos, 'total': total})
 
-@login_required
+@login_required(login_url='/login2/')
 def eliminar_del_carrito(request, curso_id):
     carrito = get_object_or_404(Carrito, usuario=request.user)
     CursoEnCarrito.objects.filter(carrito=carrito, curso_id=curso_id).delete()
     return redirect('ver_carrito')
 
 
-@login_required
+@login_required(login_url='/login2/')
 def procesar_compra(request):
     if request.method != 'POST':
         return redirect('ver_carrito')

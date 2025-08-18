@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.contrib.auth.models import User
+
 class Curso(models.Model):
     categorias = [
         ('Programacion', 'Programacion'), 
@@ -18,6 +20,16 @@ class Curso(models.Model):
     categoria = models.CharField(max_length=100, choices=categorias)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
+
+    # 🔹 Campo maestro
+    maestro = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        limit_choices_to={'groups__name': 'maestro'},
+        related_name='cursos'
+    )
 
     def __str__(self):
         return self.nombre
@@ -47,9 +59,12 @@ class CursoComprado(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username} compró {self.curso.nombre}"
+        
 
     class Meta:
         unique_together = ('usuario', 'curso')  # Evita compras duplicadas
+        verbose_name = "Alumnos inscritos"
+        verbose_name_plural = "alumnos inscritos"
 
 class TotalGastado(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='total_gastado')
@@ -73,13 +88,19 @@ class VideoModulo(models.Model):
     def __str__(self):
         return f"{self.modulo.titulo} - {self.titulo}"
     
+from django.contrib.auth.models import User
+
 class CursoPreregistro(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cursos_preregistrados')
-    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    curso = models.ForeignKey("Curso", on_delete=models.CASCADE)
     telefono = models.IntegerField()
     ciudad = models.CharField(max_length=20)
     estado = models.CharField(max_length=20)
     fecha_preregistro = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.usuario.username} con correo {self.usuario.email} se registro {self.curso.nombre}"
+        return f"{self.usuario.username} se registró en {self.curso.nombre}"
+
+    class Meta:
+        verbose_name = "Pre-registro de Curso"
+        verbose_name_plural = "Pre-registros de Cursos"
