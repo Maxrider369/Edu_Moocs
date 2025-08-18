@@ -47,7 +47,7 @@
                 <a href="{% url 'contacto' %}" class="text-gray-600 hover:text-primary">CONOCENOS</a>
 
                 {% if not request.user.is_authenticated %}
-                    <a href="{% url 'login' %}" class="text-gray-600 hover:text-primary">LOGIN</a>
+                    <a href="{% url 'login2' %}" class="text-gray-600 hover:text-primary">LOGIN</a>
                 {% endif %}
 
                 {% if request.user.is_authenticated %}

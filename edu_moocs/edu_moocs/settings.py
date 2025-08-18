@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,6 +87,7 @@ DATABASES = {
 }
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -104,6 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = '/principal/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -131,3 +134,54 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/login/'
+
+SITE_URL = "http://127.0.0.1:8000/" # O la URL de tu sitio en producción
+# settings.py
+
+UNFOLD = {
+    "SITE_TITLE": "Edu Moocs",
+    "SITE_HEADER": "Edu Moocs",
+    "SITE_URL": "http://127.0.0.1:8000/",
+    
+    "COLORS": {
+        "base": {  # tonos de gris
+            "50": "248, 250, 252",
+            "100": "241, 245, 249",
+            "200": "226, 232, 240",
+            "300": "203, 213, 225",
+            "400": "148, 163, 184",
+            "500": "100, 116, 139",
+            "600": "71, 85, 105",
+            "700": "51, 65, 85",
+            "800": "30, 41, 59",
+            "900": "15, 23, 42",
+        },
+        "primary": {  # tonos azules
+            "50": "235, 248, 255",
+            "100": "204, 232, 255",
+            "200": "153, 214, 255",
+            "300": "102, 196, 255",
+            "400": "51, 178, 255",
+            "500": "0, 160, 255",
+            "600": "0, 140, 220",
+            "700": "0, 110, 180",
+            "800": "0, 80, 140",
+            "900": "0, 50, 100",
+        },
+        "font": {
+            "subtle-light": "var(--color-base-500)",
+            "subtle-dark": "var(--color-base-400)",
+            "default-light": "var(--color-base-600)",
+            "default-dark": "var(--color-base-300)",
+            "important-light": "var(--color-primary-600)",
+            "important-dark": "var(--color-primary-400)",
+        },
+    },
+
+    "FONTS": {
+        "default": "Arial, sans-serif",
+        "heading": "Helvetica, sans-serif",
+        "monospace": "Courier New, monospace",
+    },
+}
+
