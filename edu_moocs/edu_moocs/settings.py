@@ -107,6 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGIN_REDIRECT_URL = '/principal/'
+LOGIN_URL = '/login2/'  # nombre de la ruta del login_basico
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

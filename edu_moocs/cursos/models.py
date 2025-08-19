@@ -104,3 +104,21 @@ class CursoPreregistro(models.Model):
     class Meta:
         verbose_name = "Pre-registro de Curso"
         verbose_name_plural = "Pre-registros de Cursos"
+
+class Recurso(models.Model):
+    TIPOS = [
+        ('pdf', 'PDF'),
+        ('doc', 'Word'),
+        ('ppt', 'PowerPoint'),
+        ('img', 'Imagen'),
+        ('otro', 'Otro'),
+    ]
+
+    curso = models.ForeignKey("Curso", on_delete=models.CASCADE, related_name="recursos")
+    nombre = models.CharField(max_length=150)
+    archivo = models.FileField(upload_to="recursos/")
+    tipo = models.CharField(max_length=10, choices=TIPOS, default="otro")
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.tipo})"

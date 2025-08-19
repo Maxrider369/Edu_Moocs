@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo, CursoPreregistro
+from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo, CursoPreregistro, Recurso
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.utils import timezone
@@ -36,11 +36,26 @@ def lista_cursos(request):
     })
 
 
+from django.utils.timezone import now
+
 @login_required(login_url='/login2/')
 def detalle_curso(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
+    recursos = curso.recursos.all()  
     modulos = curso.modulo.all()
     
+    maestro = curso.maestro  
+
+    cantidad_alumnos = CursoComprado.objects.filter(curso=curso).count()
+
+    duracion_semanas = None
+    if curso.fecha_inicio and curso.fecha_fin:
+        dias = (curso.fecha_fin - curso.fecha_inicio).days
+        duracion_semanas = dias // 7
+
+    total_lecciones = VideoModulo.objects.filter(modulo__curso=curso).count()
+
+    # --- manejo de video seleccionado ---
     video_id = request.GET.get('video')
     video_seleccionado = None
     video_anterior = None
@@ -48,11 +63,9 @@ def detalle_curso(request, curso_id):
 
     videos = list(VideoModulo.objects.filter(modulo__curso=curso).order_by('id'))
 
-    
     if video_id:
         try:
             video_id_int = int(video_id.strip())
-
             for idx, video in enumerate(videos):
                 if video.id == video_id_int:
                     video_seleccionado = video
@@ -60,22 +73,24 @@ def detalle_curso(request, curso_id):
                         video_anterior = videos[idx - 1]
                     if idx < len(videos) - 1:
                         video_siguiente = videos[idx + 1]
-                    break  # Salimos del bucle al encontrar el video
-
-        except (ValueError, TypeError):
-            pass  #
+                    break
         except (ValueError, TypeError):
             video_seleccionado = None
             video_anterior = None
             video_siguiente = None
+
     return render(request, 'cursos/detalle-curso.html', {
         'curso': curso,
+        'maestro': maestro,
+        'cantidad_alumnos': cantidad_alumnos,
+        'duracion_semanas': duracion_semanas,
+        'total_lecciones': total_lecciones,
         'modulos': modulos,
+        'recursos': recursos,
         'video_seleccionado': video_seleccionado,
         'video_anterior': video_anterior,
         'video_siguiente': video_siguiente,
     })
-
 
 @login_required(login_url='/login2/')
 def agregar_al_carrito(request, curso_id):
@@ -84,12 +99,14 @@ def agregar_al_carrito(request, curso_id):
 
     if CursoEnCarrito.objects.filter(carrito=carrito, curso=curso).exists():
         messages.warning(request, f"El curso '{curso.nombre}' ya está en tu carrito.")
+    elif CursoComprado.objects.filter(usuario=request.user, curso=curso).exists():
+        messages.warning(request, f"Ya has comprado el curso, '{curso.nombre} '¿gustas adquirir otro? ")
+        return redirect('lista_cursos')
     else:
         CursoEnCarrito.objects.create(carrito=carrito, curso=curso)
         messages.success(request, f"Curso '{curso.nombre}' agregado al carrito.")
 
-    # Redirige de vuelta al catálogo
-    return redirect('lista_cursos')
+    return redirect('ver_carrito')
 
 @login_required(login_url='/login2/')
 def ver_carrito(request):
@@ -138,6 +155,7 @@ def procesar_compra(request):
 
     return redirect('mis_cursos')
 
+@login_required(login_url='/login2/')
 def mis_cursos(request):
     cursos_comprados = CursoComprado.objects.filter(usuario=request.user).select_related('curso')
     cursos_preregistrado = CursoPreregistro.objects.filter(usuario=request.user).select_related('curso')
@@ -151,7 +169,7 @@ def mis_cursos(request):
     })
 
 
-
+@login_required(login_url='/login2/')
 def preregistro(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:

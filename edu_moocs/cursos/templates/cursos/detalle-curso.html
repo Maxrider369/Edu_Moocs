@@ -102,13 +102,13 @@
                         <div class="flex text-yellow-400">
                             <span>★★★★★</span>
                         </div>
-                        <span>(4.8) • 456 estudiantes</span>
+                        <span>(4.8) • {{ cantidad_alumnos }} estudiantes</span>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <img class="w-12 h-12 rounded-full bg-white/20" src="/placeholder.svg?height=48&width=48" alt="Instructor">
+                        <img class="w-12 h-12 rounded-full bg-white/20" src="https://st4.depositphotos.com/14695324/23414/v/450/depositphotos_234143482-stock-illustration-employee-avatar-user-vector-illustration.jpg" alt="Instructor">
                         <div>
-                            <p class="font-semibold">Dr. María González</p>
-                            <p class="opacity-90">Profesora de Matemáticas</p>
+                            <p class="font-semibold">Maestro(a). {{ maestro }}</p>
+                            <p class="opacity-90">Profesor(a) EDU MOOCS</p>
                         </div>
                     </div>
                 </div>
@@ -212,11 +212,11 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-gray-600">Duración:</span>
-                            <span class="font-medium">8 semanas</span>
+                            <span class="font-medium">{{ duracion_semanas }} semanas</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Lecciones:</span>
-                            <span class="font-medium">16</span>
+                            <span class="font-medium">{{ total_lecciones }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Nivel:</span>
@@ -235,28 +235,44 @@
 
                 <!-- Resources -->
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-semibold mb-4">Recursos</h3>
-                    <div class="space-y-3">
-                        <a href="#" class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
-                            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                            </svg>
-                            <span>Manual del Curso.pdf</span>
-                        </a>
-                        <a href="#" class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
-                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                            </svg>
-                            <span>Ejercicios Prácticos.xlsx</span>
-                        </a>
-                        <a href="#" class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
-                            <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                            </svg>
-                            <span>Fórmulas de Referencia.pdf</span>
-                        </a>
-                    </div>
-                </div>
+    <h3 class="text-lg font-semibold mb-4">Recursos</h3>
+    
+    {% if recursos %}
+        <div class="space-y-3">
+            {% for recurso in recursos %}
+                <a href="{{ recurso.archivo.url }}" target="_blank"
+                   class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
+                   
+                   {% if recurso.tipo == "pdf" %}
+                       <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                           <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                       </svg>
+                   {% elif recurso.tipo == "doc" %}
+                       <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                           <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                       </svg>
+                   {% elif recurso.tipo == "ppt" %}
+                       <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                           <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                       </svg>
+                   {% elif recurso.tipo == "img" %}
+                       <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                           <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                       </svg>
+                   {% else %}
+                       <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                           <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                       </svg>
+                   {% endif %}
+                   
+                   <span>{{ recurso.nombre }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-500">No hay recursos disponibles para este curso.</p>
+    {% endif %}
+</div>
             </div>
         </div>
     </div>
