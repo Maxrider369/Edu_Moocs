@@ -4,7 +4,9 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Curso, Carrito, CursoEnCarrito, CursoComprado, TotalGastado, Modulo, VideoModulo, CursoPreregistro
 from django.contrib.admin import RelatedOnlyFieldListFilter
+from .models import Recurso
 
+admin.site.register(Recurso)
 
 # Filtro lateral por maestro
 class MaestroFilter(admin.SimpleListFilter):

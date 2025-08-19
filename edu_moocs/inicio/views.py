@@ -3,8 +3,8 @@ from cursos.models import Curso
 
 # Create your views here.
 def principal(request):
-    cursos_destacados = Curso.objects.all()[:3]
-    return render(request, 'inicio/index.html', {'cursos': cursos_destacados})
+    cursos_disponibles = Curso.objects.filter(disponible=True)
+    return render(request, 'inicio/index.html', {'cursos': cursos_disponibles})
 
 
 def contacto(request):

@@ -15,7 +15,7 @@ def registro_basico(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('principal')  # Redirige a la página principal
+            return redirect('principal')  
     else:
         form = RegistroBasicoForm()
     return render(request, 'usuarios/registro.html', {'form': form})
@@ -29,14 +29,14 @@ def login_basico(request):
             return redirect('principal')
     else:
         form = AuthenticationForm()
-    return render(request, 'usuarios/login.html', {'form': form})
+    return render(request, 'usuarios/login2.html', {'form': form})
 
 # Logout
 def logout_basico(request):
     logout(request)
     return redirect('principal')
 
-# Editar perfil
+
 
 
 @login_required
